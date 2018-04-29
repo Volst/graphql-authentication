@@ -1,0 +1,41 @@
+{
+  "name": "@volst/prisma-auth",
+  "version": "0.0.0",
+  "description": "Authentication with Prisma",
+  "main": "index.js",
+  "author": "kees@volst.nl",
+  "license": "ISC",
+  "private": false,
+  "files": [
+    "dist",
+    "schema.graphql"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepublishOnly": "npm run -s build",
+    "precommit": "pretty-quick --staged",
+    "start-example": "ts-node example/index.ts"
+  },
+  "devDependencies": {
+    "graphql-cli": "^2.15.13",
+    "graphql-yoga": "1.12.1",
+    "prettier": "^1.12.1",
+    "pretty-quick": "^1.4.1",
+    "prisma-binding": "^1.5.18",
+    "ts-node": "^6.0.2",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.1",
+    "@types/jsonwebtoken": "^7.2.6",
+    "@types/uuid": "^3.4.3",
+    "@types/validator": "^9.4.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.2.1",
+    "uuid": "^3.2.1",
+    "validator": "^9.4.1"
+  },
+  "peerDependencies": {
+    "prisma-binding": "^1.5.18"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "lib": ["esnext"],
+    "strict": true,
+    // Disabled because Prisma generated TypeScript code which is not compatible with this flag
+    "strictFunctionTypes": false,
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

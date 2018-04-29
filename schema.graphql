@@ -1,0 +1,63 @@
+# import Mutation.deleteUser, UserUpdateInput from "./src/generated/prisma.graphql"
+
+type Query {
+  currentUser: User
+}
+
+type Mutation {
+  signupByInvite(
+    email: String!
+    inviteToken: String!
+    password: String!
+    name: String!
+  ): AuthPayload!
+  signup(email: String!, password: String!, name: String!): AuthPayload!
+  inviteUser(data: InviteUserInput): InviteUserPayload!
+  login(email: String!, password: String!): AuthPayload!
+  changePassword(
+    oldPassword: String!
+    newPassword: String!
+  ): ChangePasswordPayload!
+  updateCurrentUser(data: UserUpdateInput!): User
+  triggerPasswordReset(email: String!): TriggerPasswordResetPayload!
+  passwordReset(
+    email: String!
+    resetToken: String!
+    password: String!
+  ): PasswordResetPayload!
+}
+
+input InviteUserInput {
+  email: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type ChangePasswordPayload {
+  id: ID!
+}
+
+type InviteUserPayload {
+  id: ID!
+}
+
+type TriggerPasswordResetPayload {
+  ok: Boolean!
+}
+
+type PasswordResetPayload {
+  id: ID!
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  # For the record, I do not like this name but at least it is clear.
+  inviteAccepted: Boolean!
+  deletedAt: DateTime
+  isSuper: Boolean!
+}

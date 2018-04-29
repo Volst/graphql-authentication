@@ -1,0 +1,12 @@
+type User {
+  id: ID! @unique
+  email: String! @unique
+  password: String!
+  name: String!
+  inviteToken: String
+  inviteAccepted: Boolean! @default(value: "true")
+  resetToken: String
+  resetExpires: DateTime
+  deletedAt: DateTime
+  isSuper: Boolean! @default(value: "false")
+}

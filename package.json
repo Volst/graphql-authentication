@@ -2,11 +2,12 @@
   "name": "@volst/prisma-auth",
   "version": "0.0.0",
   "description": "Authentication with Prisma",
-  "main": "index.js",
   "author": "kees@volst.nl",
   "repository": "Volst/prisma-auth",
   "license": "ISC",
   "private": false,
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "files": [
     "dist",
     "schema.graphql"

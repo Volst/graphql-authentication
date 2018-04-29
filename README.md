@@ -16,6 +16,11 @@ An authorization package for [Prisma](https://www.prisma.io/). It uses old-schoo
 
 ## Installation
 
+```
+yarn add @volst/prisma-auth
+npm i @volst/prisma-auth
+```
+
 In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
 
 In your `schema.graphql` for your own server, add something like the following:
@@ -36,5 +41,30 @@ export default {
   Mutation: {
     ...authMutations
   }
+};
+```
+
+## Usage
+
+Get the current user in a resolver:
+
+```js
+import { getUser } from '@volst/prisma-auth';
+
+const Mutation = {
+  async publish(parent, data, ctx) {
+    const user = await getUser(ctx);
+    console.log('User', user.email);
+  }
+};
+```
+
+Forward a resolver directly to Prisma, and require that the user is logged in:
+
+```js
+import { forwardTo } from '@volst/prisma-auth';
+
+const Mutation = {
+  publish: forwardTo()
 };
 ```

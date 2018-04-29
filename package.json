@@ -4,6 +4,7 @@
   "description": "Authentication with Prisma",
   "main": "index.js",
   "author": "kees@volst.nl",
+  "repository": "Volst/prisma-auth",
   "license": "ISC",
   "private": false,
   "files": [

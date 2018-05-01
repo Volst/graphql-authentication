@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import * as uuidv4 from 'uuid/v4';
 import { getUser, Context, forwardTo } from './utils';
-// import { sendMail } from '../mailer';
 import { User, UserUpdateInput } from './generated/prisma';
 import { GraphQLResolveInfo } from 'graphql';
 import * as Email from 'email-templates';
@@ -301,8 +300,6 @@ export function mutations(options: MutationOptions) {
       });
 
       return user;
-    },
-
-    deleteUser: forwardTo({})
+    }
   };
 }

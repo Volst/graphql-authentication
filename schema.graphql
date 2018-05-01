@@ -1,5 +1,3 @@
-# import Mutation.deleteUser, UserUpdateInput from "./src/generated/prisma.graphql"
-
 type Query {
   currentUser: User
 }
@@ -25,10 +23,6 @@ type Mutation {
     resetToken: String!
     password: String!
   ): PasswordResetPayload!
-}
-
-input InviteUserInput {
-  email: String!
 }
 
 type AuthPayload {
@@ -60,4 +54,20 @@ type User {
   inviteAccepted: Boolean!
   deletedAt: DateTime
   isSuper: Boolean!
+}
+
+input InviteUserInput {
+  email: String!
+}
+
+input UserUpdateInput {
+  email: String
+  password: String
+  name: String
+  inviteToken: String
+  inviteAccepted: Boolean
+  resetToken: String
+  resetExpires: DateTime
+  deletedAt: DateTime
+  isSuper: Boolean
 }

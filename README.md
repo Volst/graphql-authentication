@@ -38,6 +38,8 @@ import * as Email from 'email-templates';
 const options = {
   // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
   mailer: Email(),
+  // Optional, the URL to your frontend which is used in emails
+  mailAppUrl: 'http://example.com',
 };
 
 export default {

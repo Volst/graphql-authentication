@@ -23,6 +23,7 @@ function getHashedPassword(value: string) {
 
 export interface MutationOptions {
   mailer?: Email;
+  mailAppUrl?: string;
   hookInviteUserPostCreate?: (
     data: any,
     ctx: Context,
@@ -203,10 +204,13 @@ export function mutations(options: MutationOptions) {
         options.mailer.send({
           template: 'inviteUser',
           message: {
-            to: newUser.email,
-            send: true
+            to: newUser.email
           },
-          locals: { inviteToken, email: newUser.email }
+          locals: {
+            mailAppUrl: options.mailAppUrl,
+            inviteToken,
+            email: newUser.email
+          }
         });
       }
 
@@ -244,10 +248,9 @@ export function mutations(options: MutationOptions) {
         options.mailer.send({
           template: 'passwordReset',
           message: {
-            to: user.email,
-            send: true
+            to: user.email
           },
-          locals: { resetToken, email }
+          locals: { mailAppUrl: options.mailAppUrl, resetToken, email }
         });
       }
 

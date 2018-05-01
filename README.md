@@ -1,6 +1,6 @@
 # @volst/prisma-auth
 
-An authorization package for [Prisma](https://www.prisma.io/). It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
+An authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
 
 **Experimental, but should work.**
 
@@ -23,7 +23,7 @@ npm i @volst/prisma-auth
 
 In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
 
-In your `schema.graphql` for your own server, add something like the following:
+In your `schema.graphql` for your own server, add something like the following (you can also import specific endpoints only):
 
 ```graphql
 # import Query.*, Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
@@ -54,6 +54,8 @@ export default {
 
 ## Usage
 
+### Helper utilities
+
 Get the current user in a resolver:
 
 ```js
@@ -76,3 +78,20 @@ const Mutation = {
   publish: forwardTo()
 };
 ```
+
+### GraphQL endpoints
+
+Mutations:
+
+- `signUpByInvite`
+- `signup`
+- `inviteUser`
+- `login`
+- `changePassword`
+- `updateCurrentUser`
+- `trigerPasswordReset`
+- `passwordReset`
+
+Queries:
+
+- `currentUser`

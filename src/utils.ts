@@ -1,9 +1,11 @@
 import * as jwt from 'jsonwebtoken';
 import { Prisma } from './generated/prisma';
 import { forwardTo as pForwardTo } from 'prisma-binding';
+import { PrismaAuthConfig } from './Config';
 
 export interface Context {
   db: Prisma;
+  prismaAuth: PrismaAuthConfig;
   request: any;
 }
 

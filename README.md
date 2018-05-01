@@ -31,27 +31,34 @@ In your `schema.graphql` for your own server, add something like the following (
 # import Query.*, Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
 ```
 
-Then, in your resolvers file:
+In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
 ```js
-import { authQueries, authMutations } from '@volst/prisma-auth';
+import { authQueries, authMutations, PrismaAuthConfig } from '../src';
 import * as Email from 'email-templates';
 
-const options = {
-  // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
-  mailer: Email(),
-  // Optional, the URL to your frontend which is used in emails
-  mailAppUrl: 'http://example.com',
-};
-
-export default {
+const resolvers = {
   Query: {
-    ...authQueries()
+    ...authQueries
   },
   Mutation: {
-    ...authMutations(options)
+    ...authMutations
   }
 };
+
+const server = new GraphQLServer({
+  typeDefs: './schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    prismaAuth: new PrismaAuthConfig({
+      // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
+      mailer: Email(),
+      // Optional, the URL to your frontend which is used in emails
+      mailAppUrl: 'http://example.com',
+    })
+  })
+});
 ```
 
 ## Documentation

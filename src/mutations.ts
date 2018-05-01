@@ -27,7 +27,7 @@ export interface MutationOptions {
     data: any,
     ctx: Context,
     user: User
-  ) => Promise<void>;
+  ) => Promise<any>;
 }
 
 export function mutations(options: MutationOptions) {

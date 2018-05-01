@@ -24,6 +24,7 @@ function getHashedPassword(value: string) {
 
 export interface MutationOptions {
   mailer?: Email;
+  hookInviteUserPostCreate?: (data: any, user: User) => Promise<void>;
 }
 
 export function mutations(options: MutationOptions) {
@@ -166,6 +167,9 @@ export function mutations(options: MutationOptions) {
         where: { email: data.email }
       });
       if (existingUser) {
+        if (options.hookInviteUserPostCreate) {
+          await options.hookInviteUserPostCreate(data, existingUser);
+        }
         return {
           id: existingUser.id
         };
@@ -185,6 +189,10 @@ export function mutations(options: MutationOptions) {
           name: ''
         }
       });
+
+      if (options.hookInviteUserPostCreate) {
+        await options.hookInviteUserPostCreate(data, newUser);
+      }
 
       console.log('Generated token:', inviteToken);
 

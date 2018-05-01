@@ -33,13 +33,19 @@ Then, in your resolvers file:
 
 ```js
 import { authQueries, authMutations } from '@volst/prisma-auth';
+import * as Email from 'email-templates';
+
+const options = {
+  // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
+  mailer: Email(),
+};
 
 export default {
   Query: {
-    ...authQueries
+    ...authQueries()
   },
   Mutation: {
-    ...authMutations
+    ...authMutations(options)
   }
 };
 ```

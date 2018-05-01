@@ -6,10 +6,10 @@ import { authQueries, authMutations } from '../src';
 
 const resolvers = {
   Query: {
-    ...authQueries
+    ...authQueries()
   },
   Mutation: {
-    ...authMutations
+    ...authMutations({})
   }
 };
 

@@ -7,8 +7,8 @@ import { User, UserUpdateInput } from './generated/prisma';
 import { GraphQLResolveInfo } from 'graphql';
 import * as Email from 'email-templates';
 
-function generateToken(user: User) {
-  return jwt.sign({ userId: user.id }, process.env.BACKEND_APP_SECRET || '');
+function generateToken(user: User, ctx: Context) {
+  return jwt.sign({ userId: user.id }, ctx.prismaAuth.secret);
 }
 
 function validatePassword(value: string) {
@@ -57,7 +57,7 @@ export const mutations = {
     });
 
     return {
-      token: generateToken(user),
+      token: generateToken(user, ctx),
       user: updatedUser
     };
   },
@@ -85,7 +85,7 @@ export const mutations = {
     });
 
     return {
-      token: generateToken(newUser),
+      token: generateToken(newUser, ctx),
       user: newUser
     };
   },
@@ -106,7 +106,7 @@ export const mutations = {
     }
 
     return {
-      token: generateToken(user),
+      token: generateToken(user, ctx),
       user
     };
   },

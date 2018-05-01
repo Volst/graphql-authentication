@@ -13,10 +13,7 @@ export function getUserId(ctx: Context): string {
   const Authorization = ctx.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
-    const { userId } = jwt.verify(
-      token,
-      process.env.BACKEND_APP_SECRET || ''
-    ) as {
+    const { userId } = jwt.verify(token, ctx.prismaAuth.secret) as {
       userId: string;
     };
     return userId;

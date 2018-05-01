@@ -5,6 +5,7 @@ import { Context } from './utils';
 export interface IConfig {
   mailer?: Email;
   mailAppUrl?: string;
+  secret: string;
   hookInviteUserPostCreate?: (
     data: any,
     ctx: Context,
@@ -17,6 +18,7 @@ export class PrismaAuthConfig {
     Object.assign(this, options);
   }
   // There most probably is a better way to do this...
+  secret: IConfig['secret'] = '';
   mailer: IConfig['mailer'];
   mailAppUrl: IConfig['mailAppUrl'];
   hookInviteUserPostCreate: IConfig['hookInviteUserPostCreate'];

@@ -22,7 +22,9 @@ const server = new GraphQLServer({
       endpoint: 'http://localhost:4466',
       debug: true
     }),
-    prismaAuth: new PrismaAuthConfig({})
+    prismaAuth: new PrismaAuthConfig({
+      secret: 'wherearemyshoes'
+    })
   })
 });
 server.start(() => console.log('Server is running on http://localhost:4000'));

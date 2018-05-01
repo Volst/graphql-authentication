@@ -198,8 +198,6 @@ export function mutations(options: MutationOptions) {
         await options.hookInviteUserPostCreate(data, ctx, newUser);
       }
 
-      console.log('Generated token:', inviteToken);
-
       if (options.mailer) {
         options.mailer.send({
           template: 'inviteUser',
@@ -241,8 +239,6 @@ export function mutations(options: MutationOptions) {
         where: { id: user.id },
         data: { resetToken, resetExpires }
       });
-
-      console.log('Generated token:', resetToken);
 
       if (options.mailer) {
         options.mailer.send({

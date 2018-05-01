@@ -14,12 +14,14 @@ An authorization package for [Prisma](https://www.prisma.io/), a GraphQL databas
 * Update current user info
 * Put resolvers behind login
 
-## Installation
+## Install
 
 ```
 yarn add @volst/prisma-auth
 npm i @volst/prisma-auth
 ```
+
+## Usage
 
 In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
 
@@ -52,7 +54,26 @@ export default {
 };
 ```
 
-## Usage
+## Documentation
+
+### GraphQL endpoints
+
+Mutations:
+
+- `signUpByInvite`
+- `signup`
+- `inviteUser`
+- `login`
+- `changePassword`
+- `updateCurrentUser`
+- `trigerPasswordReset`
+- `passwordReset`
+
+Queries:
+
+- `currentUser`
+
+For more details take a look at [schema.graphql](./schema.graphql).
 
 ### Helper utilities
 
@@ -79,19 +100,19 @@ const Mutation = {
 };
 ```
 
-### GraphQL endpoints
+### Login and session handling
 
-Mutations:
+[JWT tokens](https://jwt.io/) are used to handle sessions. In the frontend you can perform a login like this:
 
-- `signUpByInvite`
-- `signup`
-- `inviteUser`
-- `login`
-- `changePassword`
-- `updateCurrentUser`
-- `trigerPasswordReset`
-- `passwordReset`
+```graphql
+mutation login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+    user { # optional
+      name
+    }
+  }
+}
+```
 
-Queries:
-
-- `currentUser`
+And then save the token to `localStorage`. Now you need to send the token with every request. If you are using Apollo, [the documentation](https://www.apollographql.com/docs/react/recipes/authentication.html#Header) has a great example on how to do this.

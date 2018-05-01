@@ -2,7 +2,7 @@
 
 An authorization package for [Prisma](https://www.prisma.io/). It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
 
-**Work in progress, this does not work yet!!!**
+**Experimental, but should work.**
 
 **Features:**
 

@@ -1,6 +1,6 @@
-# @volst/prisma-auth
+# Prisma Auth
 
-An authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
+A very opinionated authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
 
 **Experimental, but should work.**
 

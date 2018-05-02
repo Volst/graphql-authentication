@@ -98,6 +98,10 @@ export const mutations = {
       throw new Error('User has not accepted invite yet');
     }
 
+    if (user.deletedAt) {
+      throw new Error('User has been deleted');
+    }
+
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
       throw new Error('Invalid password');

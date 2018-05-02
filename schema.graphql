@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
   currentUser: User
 }
@@ -62,12 +64,5 @@ input InviteUserInput {
 
 input UserUpdateInput {
   email: String
-  password: String
   name: String
-  inviteToken: String
-  inviteAccepted: Boolean
-  resetToken: String
-  resetExpires: DateTime
-  deletedAt: DateTime
-  isSuper: Boolean
 }

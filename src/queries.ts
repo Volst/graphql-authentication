@@ -1,5 +1,4 @@
-import { getUserId, Context, forwardTo } from './utils';
-import { GraphQLResolveInfo } from 'graphql';
+import { getUserId, Context } from './utils';
 import { User } from './generated/prisma';
 
 export const queries = {

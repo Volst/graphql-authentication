@@ -8,6 +8,8 @@
     "strict": true,
     // Disabled because Prisma generated TypeScript code which is not compatible with this flag
     "strictFunctionTypes": false,
+    // Disabled because this doesn't work correctly with "declaration": true
+    "noUnusedLocals": false,
     "noImplicitAny": false,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true

@@ -1,7 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
-import { importSchema } from 'graphql-import';
 import { Prisma } from '../src/generated/prisma';
-import { Context } from './utils';
 import { authQueries, authMutations, prismaAuthConfig } from '../src';
 
 const resolvers = {

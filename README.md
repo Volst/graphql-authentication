@@ -6,7 +6,7 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 
 **Features:**
 
-* Signup with email/password
+* Signup with good ol' email/password
 * Login
 * Invite another user
 * Password reset

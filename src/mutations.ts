@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import * as uuidv4 from 'uuid/v4';
-import { getUser, Context, forwardTo } from './utils';
+import { getUser, Context } from './utils';
 import { User, UserUpdateInput } from './generated/prisma';
 
 function generateToken(user: User, ctx: Context) {
@@ -60,10 +60,8 @@ export const mutations = {
     if (!data.email) {
       throw new Error('Forgot email');
     }
-    const user = await ctx.db.query.user({
-      where: { email: data.email }
-    });
-    if (user) {
+    const userExists = await ctx.db.exists.User({ email: data.email });
+    if (userExists) {
       throw new Error(`User already exists.`);
     }
 

@@ -20,34 +20,30 @@ function getHashedPassword(value: string) {
 }
 
 export const mutations = {
-  async signupByInvite(
-    parent: any,
-    { email, inviteToken, password, name }: User,
-    ctx: Context
-  ) {
+  async signupByInvite(parent: any, { data }: { data: User }, ctx: Context) {
     // Important first check, because i.e. the `inviteToken` could be an empty string
     // and in that case the find query beneath would find any user with any given email,
     // allowing you to change the password of everybody.
-    if (!inviteToken || !email) {
+    if (!data.inviteToken || !data.email) {
       throw new Error('Forgot email or inviteToken');
     }
     const user = await ctx.db.query.user({
-      where: { email }
+      where: { email: data.email }
     });
     if (!user) {
       throw new Error(`No user found for given email`);
     }
-    if (user.inviteToken !== inviteToken || user.inviteAccepted) {
+    if (user.inviteToken !== data.inviteToken || user.inviteAccepted) {
       throw new Error('Invite token invalid');
     }
 
-    validatePassword(password);
-    const hashedPassword = await getHashedPassword(password);
+    validatePassword(data.password);
+    const hashedPassword = await getHashedPassword(data.password);
 
     const updatedUser = await ctx.db.mutation.updateUser({
       where: { id: user.id },
       data: {
-        name,
+        name: data.name,
         inviteToken: '',
         inviteAccepted: true,
         password: hashedPassword
@@ -60,24 +56,24 @@ export const mutations = {
     };
   },
 
-  async signup(parent: any, { email, password, name }: User, ctx: Context) {
-    if (!email) {
+  async signup(parent: any, { data }: { data: User }, ctx: Context) {
+    if (!data.email) {
       throw new Error('Forgot email');
     }
     const user = await ctx.db.query.user({
-      where: { email }
+      where: { email: data.email }
     });
     if (user) {
       throw new Error(`User already exists.`);
     }
 
-    validatePassword(password);
-    const hashedPassword = await getHashedPassword(password);
+    validatePassword(data.password);
+    const hashedPassword = await getHashedPassword(data.password);
 
     const newUser = await ctx.db.mutation.createUser({
       data: {
-        name,
-        email,
+        name: data.email,
+        email: data.email,
         password: hashedPassword
       }
     });

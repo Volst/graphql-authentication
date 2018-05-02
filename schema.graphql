@@ -5,26 +5,18 @@ type Query {
 }
 
 type Mutation {
-  signupByInvite(
-    email: String!
-    inviteToken: String!
-    password: String!
-    name: String!
-  ): AuthPayload!
-  signup(email: String!, password: String!, name: String!): AuthPayload!
-  inviteUser(data: InviteUserInput): InviteUserPayload!
+  signupByInvite(data: SignupByInviteInput!): AuthPayload!
+  signup(data: SignupInput!): AuthPayload!
+  inviteUser(data: InviteUserInput!): UserIdPayload!
   login(email: String!, password: String!): AuthPayload!
-  changePassword(
-    oldPassword: String!
-    newPassword: String!
-  ): ChangePasswordPayload!
+  changePassword(oldPassword: String!, newPassword: String!): UserIdPayload!
   updateCurrentUser(data: UserUpdateInput!): User
   triggerPasswordReset(email: String!): TriggerPasswordResetPayload!
   passwordReset(
     email: String!
     resetToken: String!
     password: String!
-  ): PasswordResetPayload!
+  ): UserIdPayload!
 }
 
 type AuthPayload {
@@ -32,20 +24,12 @@ type AuthPayload {
   user: User!
 }
 
-type ChangePasswordPayload {
-  id: ID!
-}
-
-type InviteUserPayload {
+type UserIdPayload {
   id: ID!
 }
 
 type TriggerPasswordResetPayload {
   ok: Boolean!
-}
-
-type PasswordResetPayload {
-  id: ID!
 }
 
 type User {
@@ -65,4 +49,17 @@ input InviteUserInput {
 input UserUpdateInput {
   email: String
   name: String
+}
+
+input SignupByInviteInput {
+  email: String!
+  inviteToken: String!
+  password: String!
+  name: String!
+}
+
+input SignupInput {
+  email: String!
+  password: String!
+  name: String!
 }

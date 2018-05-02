@@ -1,8 +1,6 @@
 # Prisma Auth
 
-A very opinionated authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication. The intention is to let you write as less authentication-related code as possible and let you go on with your application, while being flexible enough to support different use cases (open sign up, invitation-only signup, extra fields on the User model).
-
-**Experimental, but should work.**
+A very opinionated authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication.
 
 **Features:**
 
@@ -14,14 +12,22 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 * Update current user info
 * Put resolvers behind login
 
-## Install
+# Motivation
+
+The examples in the Prisma repo have a very basic example on [how to do auth](https://github.com/graphcool/prisma/tree/master/examples/auth), but after that you’re on your own. You still need to build features like password reset and signup. **That’s a lot of boilerplate!** Nobody wants that.
+
+The intention with this package is **to let you write as less authentication-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
+
+# Install
+
+Node v8+ should be used. Install with Yarn or npm:
 
 ```
-yarn add @volst/prisma-auth
-npm i @volst/prisma-auth
+yarn add @volst/prisma-auth email-templates
+npm i @volst/prisma-auth email-templates
 ```
 
-## Usage
+# Usage
 
 In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
 
@@ -64,9 +70,9 @@ const server = new GraphQLServer({
 });
 ```
 
-## Documentation
+# Documentation
 
-### GraphQL endpoints
+## GraphQL endpoints
 
 Mutations:
 
@@ -85,7 +91,7 @@ Queries:
 
 For more details take a look at [schema.graphql](./schema.graphql).
 
-### Helper utilities
+## Helper utilities
 
 Get the current user in a resolver:
 
@@ -110,7 +116,7 @@ const Mutation = {
 };
 ```
 
-### Login and session handling
+## Login and session handling
 
 [JWT tokens](https://jwt.io/) are used to handle sessions. In the frontend you can perform a login like this:
 

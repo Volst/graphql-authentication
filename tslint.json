@@ -1,0 +1,3 @@
+{
+  "extends": "@volst/tslint-config"
+}

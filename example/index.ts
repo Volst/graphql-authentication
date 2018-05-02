@@ -2,7 +2,7 @@ import { GraphQLServer } from 'graphql-yoga';
 import { importSchema } from 'graphql-import';
 import { Prisma } from '../src/generated/prisma';
 import { Context } from './utils';
-import { authQueries, authMutations, PrismaAuthConfig } from '../src';
+import { authQueries, authMutations, prismaAuthConfig } from '../src';
 
 const resolvers = {
   Query: {
@@ -22,7 +22,7 @@ const server = new GraphQLServer({
       endpoint: 'http://localhost:4466',
       debug: true
     }),
-    prismaAuth: new PrismaAuthConfig({
+    prismaAuth: prismaAuthConfig({
       secret: 'wherearemyshoes'
     })
   })

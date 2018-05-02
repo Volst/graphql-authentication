@@ -4,8 +4,6 @@ import * as validator from 'validator';
 import * as uuidv4 from 'uuid/v4';
 import { getUser, Context, forwardTo } from './utils';
 import { User, UserUpdateInput } from './generated/prisma';
-import { GraphQLResolveInfo } from 'graphql';
-import * as Email from 'email-templates';
 
 function generateToken(user: User, ctx: Context) {
   return jwt.sign({ userId: user.id }, ctx.prismaAuth.secret);

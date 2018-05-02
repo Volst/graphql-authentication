@@ -51,7 +51,8 @@ const server = new GraphQLServer({
   resolvers,
   context: req => ({
     ...req,
-    prismaAuth: new PrismaAuthConfig({
+    db: new Prisma({...}),
+    prismaAuth: prismaAuthConfig({
       // Required, used for signing JWT tokens
       secret: 'wheredidthesodago',
       // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)

@@ -64,13 +64,15 @@ const server = new GraphQLServer({
       // Required, used for signing JWT tokens
       secret: 'wheredidthesodago',
       // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
-      mailer: Email(),
+      mailer: new Email(),
       // Optional, the URL to your frontend which is used in emails
       mailAppUrl: 'http://example.com',
     })
   })
 });
 ```
+
+Lastly, if you want to send emails, you should copy the email templates to your own project. Checkout [the example email templates](./example/emails).
 
 # Documentation
 

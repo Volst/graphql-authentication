@@ -33,6 +33,7 @@
     "prettier": "^1.12.1",
     "pretty-quick": "^1.4.1",
     "prisma-binding": "^1.5.18",
+    "pug": "^2.0.3",
     "ts-node": "^6.0.2",
     "tslint": "^5.9.1",
     "typescript": "^2.8.3"

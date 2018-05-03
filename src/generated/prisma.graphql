@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sun Apr 29 2018 15:31:55 GMT+0200 (CEST)
+# timestamp: Thu May 03 2018 12:31:30 GMT+0200 (CEST)
 
 type AggregateUser {
   count: Int!
@@ -77,6 +77,8 @@ type User implements Node {
   name: String!
   inviteToken: String
   inviteAccepted: Boolean!
+  emailConfirmed: Boolean!
+  emailConfirmToken: String
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
@@ -99,6 +101,8 @@ input UserCreateInput {
   name: String!
   inviteToken: String
   inviteAccepted: Boolean
+  emailConfirmed: Boolean
+  emailConfirmToken: String
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
@@ -127,6 +131,10 @@ enum UserOrderByInput {
   inviteToken_DESC
   inviteAccepted_ASC
   inviteAccepted_DESC
+  emailConfirmed_ASC
+  emailConfirmed_DESC
+  emailConfirmToken_ASC
+  emailConfirmToken_DESC
   resetToken_ASC
   resetToken_DESC
   resetExpires_ASC
@@ -148,6 +156,8 @@ type UserPreviousValues {
   name: String!
   inviteToken: String
   inviteAccepted: Boolean!
+  emailConfirmed: Boolean!
+  emailConfirmToken: String
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
@@ -199,6 +209,8 @@ input UserUpdateInput {
   name: String
   inviteToken: String
   inviteAccepted: Boolean
+  emailConfirmed: Boolean
+  emailConfirmToken: String
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
@@ -418,6 +430,50 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   inviteAccepted_not: Boolean
+  emailConfirmed: Boolean
+
+  """All values that are not equal to given value."""
+  emailConfirmed_not: Boolean
+  emailConfirmToken: String
+
+  """All values that are not equal to given value."""
+  emailConfirmToken_not: String
+
+  """All values that are contained in given list."""
+  emailConfirmToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  emailConfirmToken_not_in: [String!]
+
+  """All values less than the given value."""
+  emailConfirmToken_lt: String
+
+  """All values less than or equal the given value."""
+  emailConfirmToken_lte: String
+
+  """All values greater than the given value."""
+  emailConfirmToken_gt: String
+
+  """All values greater than or equal the given value."""
+  emailConfirmToken_gte: String
+
+  """All values containing the given string."""
+  emailConfirmToken_contains: String
+
+  """All values not containing the given string."""
+  emailConfirmToken_not_contains: String
+
+  """All values starting with the given string."""
+  emailConfirmToken_starts_with: String
+
+  """All values not starting with the given string."""
+  emailConfirmToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  emailConfirmToken_ends_with: String
+
+  """All values not ending with the given string."""
+  emailConfirmToken_not_ends_with: String
   resetToken: String
 
   """All values that are not equal to given value."""

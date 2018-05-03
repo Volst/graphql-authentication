@@ -7,6 +7,7 @@ type Query {
 type Mutation {
   signupByInvite(data: SignupByInviteInput!): AuthPayload!
   signup(data: SignupInput!): AuthPayload!
+  confirmEmail(email: String!, emailConfirmToken: String!): AuthPayload!
   inviteUser(data: InviteUserInput!): UserIdPayload!
   login(email: String!, password: String!): AuthPayload!
   changePassword(oldPassword: String!, newPassword: String!): UserIdPayload!
@@ -37,6 +38,7 @@ type User {
   email: String!
   name: String!
   inviteAccepted: Boolean!
+  emailConfirmed: Boolean!
   deletedAt: DateTime
   isSuper: Boolean!
 }

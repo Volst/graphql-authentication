@@ -1,6 +1,7 @@
 import { GraphQLServer } from 'graphql-yoga';
 import { Prisma } from '../src/generated/prisma';
 import { authQueries, authMutations, prismaAuthConfig } from '../src';
+import * as Email from 'email-templates';
 
 const resolvers = {
   Query: {
@@ -10,6 +11,13 @@ const resolvers = {
     ...authMutations
   }
 };
+
+const mailer = new Email({
+  message: {
+    from: 'info@volst.nl'
+  },
+  send: true
+});
 
 const server = new GraphQLServer({
   typeDefs: './schema.graphql',
@@ -21,7 +29,8 @@ const server = new GraphQLServer({
       debug: true
     }),
     prismaAuth: prismaAuthConfig({
-      secret: 'wherearemyshoes'
+      secret: 'wherearemyshoes',
+      mailer
     })
   })
 });

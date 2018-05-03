@@ -4,9 +4,9 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 
 **Features:**
 
-* Signup with good ol' email/password
+* Signup with good ol' email/password and confirmation email
 * Login
-* Invite another user
+* Invite another user (sends email)
 * Password reset
 * Change password of current user
 * Update current user info
@@ -80,6 +80,7 @@ Mutations:
 
 - `signUpByInvite`
 - `signup`
+- `confirmEmail`
 - `inviteUser`
 - `login`
 - `changePassword`
@@ -151,8 +152,10 @@ type User {
   email: String!
   name: String!
   inviteAccepted: Boolean!
+  emailConfirmed: Boolean!
   deletedAt: DateTime
   isSuper: Boolean!
+  # And finally, our custom field:
   isWillingToDance: Boolean!
 }
 ```

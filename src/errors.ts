@@ -24,6 +24,13 @@ export const InvalidInviteTokenError = createError('InvalidInviteTokenError', {
   message: 'inviteToken is invalid.'
 });
 
+export const InvalidEmailConfirmToken = createError(
+  'InvalidEmailConfirmToken',
+  {
+    message: 'emailConfirmToken is invalid.'
+  }
+);
+
 export const UserEmailExistsError = createError('UserEmailExistsError', {
   message: 'User already exists with this email.'
 });

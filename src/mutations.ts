@@ -14,7 +14,8 @@ import {
   UserEmailExistsError,
   UserInviteNotAcceptedError,
   UserDeletedError,
-  InvalidOldPasswordError
+  InvalidOldPasswordError,
+  InvalidEmailConfirmToken
 } from './errors';
 
 function generateToken(user: User, ctx: Context) {
@@ -79,18 +80,68 @@ export const mutations = {
 
     validatePassword(data.password);
     const hashedPassword = await getHashedPassword(data.password);
+    const emailConfirmToken = uuidv4();
 
     const newUser = await ctx.db.mutation.createUser({
       data: {
         name: data.email,
         email: data.email,
-        password: hashedPassword
+        password: hashedPassword,
+        emailConfirmToken,
+        emailConfirmed: false
       }
     });
+
+    if (ctx.prismaAuth.mailer) {
+      console.log('EMAIL OCN', emailConfirmToken);
+      ctx.prismaAuth.mailer.send({
+        template: 'signupUser',
+        message: {
+          to: newUser.email
+        },
+        locals: {
+          mailAppUrl: ctx.prismaAuth.mailAppUrl,
+          emailConfirmToken,
+          email: newUser.email
+        }
+      });
+    }
 
     return {
       token: generateToken(newUser, ctx),
       user: newUser
+    };
+  },
+
+  async confirmEmail(
+    parent: any,
+    { emailConfirmToken, email }: { emailConfirmToken: string; email: string },
+    ctx: Context
+  ) {
+    if (!emailConfirmToken || !email) {
+      throw new MissingDataError();
+    }
+    const user = await ctx.db.query.user({
+      where: { email: email }
+    });
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+    if (user.emailConfirmToken !== emailConfirmToken || user.emailConfirmed) {
+      throw new InvalidEmailConfirmToken();
+    }
+
+    const updatedUser = await ctx.db.mutation.updateUser({
+      where: { id: user.id },
+      data: {
+        emailConfirmToken: '',
+        emailConfirmed: true
+      }
+    });
+
+    return {
+      token: generateToken(user, ctx),
+      user: updatedUser
     };
   },
 

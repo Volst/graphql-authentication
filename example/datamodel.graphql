@@ -5,6 +5,8 @@ type User {
   name: String!
   inviteToken: String
   inviteAccepted: Boolean! @default(value: "true")
+  emailConfirmed: Boolean! @default(value: "true")
+  emailConfirmToken: String
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime

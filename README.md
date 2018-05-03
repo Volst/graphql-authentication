@@ -18,6 +18,8 @@ The examples in the Prisma repo have a very basic example on [how to do auth](ht
 
 The intention with this package is **to let you write as less authentication-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 
+> If this package is too opinionated for you, you could still copy/paste parts of it in your application!
+
 # Install
 
 Node v8+ should be used. Install with Yarn or npm:

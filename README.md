@@ -31,13 +31,19 @@ npm i @volst/prisma-auth email-templates
 
 # Usage
 
+## Step 1
+
 In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
+
+## Step 2
 
 In your `schema.graphql` for your own server, add something like the following (you can also import specific endpoints only):
 
 ```graphql
 # import Query.*, Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
 ```
+
+# Step 3
 
 In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
@@ -71,6 +77,8 @@ const server = new GraphQLServer({
   })
 });
 ```
+
+## Step 4
 
 Lastly, if you want to send emails, you should copy the email templates to your own project. Checkout [the example email templates](./example/emails).
 

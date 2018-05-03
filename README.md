@@ -156,11 +156,15 @@ type User {
   inviteAccepted: Boolean!
   emailConfirmed: Boolean!
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
   # And finally, our custom field:
   isWillingToDance: Boolean!
 }
 ```
+
+If for example you do not want the `joinedAt` field to be exposed, you can simply remove it from your schema.
 
 > `extend type User` would save some copy/pasta here, but unfortunately that doesn't work yet in `graphql-js`. [More info](https://github.com/graphcool/graphql-import/issues/42#issuecomment-357693183).
 

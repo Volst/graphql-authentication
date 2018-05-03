@@ -88,7 +88,8 @@ export const mutations = {
         email: data.email,
         password: hashedPassword,
         emailConfirmToken,
-        emailConfirmed: false
+        emailConfirmed: false,
+        joinedAt: new Date().toISOString()
       }
     });
 
@@ -164,6 +165,14 @@ export const mutations = {
       throw new UserNotFoundError();
     }
 
+    // Purposefully async, this update doesn't matter that much.
+    ctx.db.mutation.updateUser({
+      where: { id: user.id },
+      data: {
+        lastLogin: new Date().toISOString()
+      }
+    });
+
     return {
       token: generateToken(user, ctx),
       user
@@ -235,7 +244,8 @@ export const mutations = {
         inviteToken,
         inviteAccepted: false,
         password: '',
-        name: ''
+        name: '',
+        joinedAt: new Date().toISOString()
       }
     });
 

@@ -71,6 +71,8 @@ type User implements Node {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
 }
 
@@ -100,6 +102,8 @@ input UserCreateInput {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean
 }
 
@@ -140,6 +144,10 @@ enum UserOrderByInput {
   resetExpires_DESC
   deletedAt_ASC
   deletedAt_DESC
+  lastLogin_ASC
+  lastLogin_DESC
+  joinedAt_ASC
+  joinedAt_DESC
   isSuper_ASC
   isSuper_DESC
   updatedAt_ASC
@@ -160,6 +168,8 @@ type UserPreviousValues {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
 }
 
@@ -213,6 +223,8 @@ input UserUpdateInput {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime
   isSuper: Boolean
 }
 
@@ -668,6 +680,64 @@ input UserWhereInput {
   All values greater than or equal the given value.
   """
   deletedAt_gte: DateTime
+  lastLogin: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  lastLogin_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  lastLogin_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  lastLogin_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  lastLogin_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  lastLogin_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  lastLogin_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  lastLogin_gte: DateTime
+  joinedAt: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  joinedAt_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  joinedAt_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  joinedAt_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  joinedAt_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  joinedAt_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  joinedAt_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  joinedAt_gte: DateTime
   isSuper: Boolean
   """
   All values that are not equal to given value.
@@ -730,6 +800,10 @@ export type UserOrderByInput =
   'resetExpires_DESC' |
   'deletedAt_ASC' |
   'deletedAt_DESC' |
+  'lastLogin_ASC' |
+  'lastLogin_DESC' |
+  'joinedAt_ASC' |
+  'joinedAt_DESC' |
   'isSuper_ASC' |
   'isSuper_DESC' |
   'updatedAt_ASC' |
@@ -758,6 +832,8 @@ export interface UserCreateInput {
   resetToken?: String
   resetExpires?: DateTime
   deletedAt?: DateTime
+  lastLogin?: DateTime
+  joinedAt: DateTime
   isSuper?: Boolean
 }
 
@@ -772,6 +848,8 @@ export interface UserUpdateInput {
   resetToken?: String
   resetExpires?: DateTime
   deletedAt?: DateTime
+  lastLogin?: DateTime
+  joinedAt?: DateTime
   isSuper?: Boolean
 }
 
@@ -908,6 +986,22 @@ export interface UserWhereInput {
   deletedAt_lte?: DateTime
   deletedAt_gt?: DateTime
   deletedAt_gte?: DateTime
+  lastLogin?: DateTime
+  lastLogin_not?: DateTime
+  lastLogin_in?: DateTime[] | DateTime
+  lastLogin_not_in?: DateTime[] | DateTime
+  lastLogin_lt?: DateTime
+  lastLogin_lte?: DateTime
+  lastLogin_gt?: DateTime
+  lastLogin_gte?: DateTime
+  joinedAt?: DateTime
+  joinedAt_not?: DateTime
+  joinedAt_in?: DateTime[] | DateTime
+  joinedAt_not_in?: DateTime[] | DateTime
+  joinedAt_lt?: DateTime
+  joinedAt_lte?: DateTime
+  joinedAt_gt?: DateTime
+  joinedAt_gte?: DateTime
   isSuper?: Boolean
   isSuper_not?: Boolean
 }
@@ -943,6 +1037,8 @@ export interface UserPreviousValues {
   resetToken?: String
   resetExpires?: DateTime
   deletedAt?: DateTime
+  lastLogin?: DateTime
+  joinedAt: DateTime
   isSuper: Boolean
 }
 
@@ -958,6 +1054,8 @@ export interface User extends Node {
   resetToken?: String
   resetExpires?: DateTime
   deletedAt?: DateTime
+  lastLogin?: DateTime
+  joinedAt: DateTime
   isSuper: Boolean
 }
 

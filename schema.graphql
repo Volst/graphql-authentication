@@ -40,6 +40,8 @@ type User {
   inviteAccepted: Boolean!
   emailConfirmed: Boolean!
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
 }
 

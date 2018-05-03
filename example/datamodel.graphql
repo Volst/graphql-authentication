@@ -10,5 +10,7 @@ type User {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean! @default(value: "false")
 }

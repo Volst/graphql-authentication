@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Thu May 03 2018 12:31:30 GMT+0200 (CEST)
+# timestamp: Thu May 03 2018 13:20:00 GMT+0200 (CEST)
 
 type AggregateUser {
   count: Int!
@@ -82,6 +82,8 @@ type User implements Node {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
 }
 
@@ -106,6 +108,8 @@ input UserCreateInput {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean
 }
 
@@ -141,6 +145,10 @@ enum UserOrderByInput {
   resetExpires_DESC
   deletedAt_ASC
   deletedAt_DESC
+  lastLogin_ASC
+  lastLogin_DESC
+  joinedAt_ASC
+  joinedAt_DESC
   isSuper_ASC
   isSuper_DESC
   updatedAt_ASC
@@ -161,6 +169,8 @@ type UserPreviousValues {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime!
   isSuper: Boolean!
 }
 
@@ -214,6 +224,8 @@ input UserUpdateInput {
   resetToken: String
   resetExpires: DateTime
   deletedAt: DateTime
+  lastLogin: DateTime
+  joinedAt: DateTime
   isSuper: Boolean
 }
 
@@ -558,6 +570,50 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   deletedAt_gte: DateTime
+  lastLogin: DateTime
+
+  """All values that are not equal to given value."""
+  lastLogin_not: DateTime
+
+  """All values that are contained in given list."""
+  lastLogin_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  lastLogin_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  lastLogin_lt: DateTime
+
+  """All values less than or equal the given value."""
+  lastLogin_lte: DateTime
+
+  """All values greater than the given value."""
+  lastLogin_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  lastLogin_gte: DateTime
+  joinedAt: DateTime
+
+  """All values that are not equal to given value."""
+  joinedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  joinedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  joinedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  joinedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  joinedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  joinedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  joinedAt_gte: DateTime
   isSuper: Boolean
 
   """All values that are not equal to given value."""

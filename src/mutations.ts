@@ -4,6 +4,18 @@ import * as validator from 'validator';
 import * as uuidv4 from 'uuid/v4';
 import { getUser, Context } from './utils';
 import { User, UserUpdateInput } from './generated/prisma';
+import {
+  MissingDataError,
+  ResetTokenExpiredError,
+  InvalidEmailError,
+  PasswordTooShortError,
+  UserNotFoundError,
+  InvalidInviteTokenError,
+  UserEmailExistsError,
+  UserInviteNotAcceptedError,
+  UserDeletedError,
+  InvalidOldPasswordError
+} from './errors';
 
 function generateToken(user: User, ctx: Context) {
   return jwt.sign({ userId: user.id }, ctx.prismaAuth.secret);
@@ -11,7 +23,7 @@ function generateToken(user: User, ctx: Context) {
 
 function validatePassword(value: string) {
   if (value.length <= 8) {
-    throw new Error('Password too short');
+    throw new PasswordTooShortError();
   }
 }
 
@@ -25,16 +37,16 @@ export const mutations = {
     // and in that case the find query beneath would find any user with any given email,
     // allowing you to change the password of everybody.
     if (!data.inviteToken || !data.email) {
-      throw new Error('Forgot email or inviteToken');
+      throw new MissingDataError();
     }
     const user = await ctx.db.query.user({
       where: { email: data.email }
     });
     if (!user) {
-      throw new Error(`No user found for given email`);
+      throw new UserNotFoundError();
     }
     if (user.inviteToken !== data.inviteToken || user.inviteAccepted) {
-      throw new Error('Invite token invalid');
+      throw new InvalidInviteTokenError();
     }
 
     validatePassword(data.password);
@@ -58,11 +70,11 @@ export const mutations = {
 
   async signup(parent: any, { data }: { data: User }, ctx: Context) {
     if (!data.email) {
-      throw new Error('Forgot email');
+      throw new MissingDataError();
     }
     const userExists = await ctx.db.exists.User({ email: data.email });
     if (userExists) {
-      throw new Error(`User already exists.`);
+      throw new UserEmailExistsError();
     }
 
     validatePassword(data.password);
@@ -85,20 +97,20 @@ export const mutations = {
   async login(parent: any, { email, password }: User, ctx: Context) {
     const user = await ctx.db.query.user({ where: { email } });
     if (!user) {
-      throw new Error('No user found for email');
+      throw new UserNotFoundError();
     }
 
     if (!user.inviteAccepted) {
-      throw new Error('User has not accepted invite yet');
+      throw new UserInviteNotAcceptedError();
     }
 
     if (user.deletedAt) {
-      throw new Error('User has been deleted');
+      throw new UserDeletedError();
     }
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      throw new Error('Invalid password');
+      throw new UserNotFoundError();
     }
 
     return {
@@ -116,7 +128,7 @@ export const mutations = {
 
     const valid = await bcrypt.compare(user.password, oldPassword);
     if (!valid) {
-      throw new Error('Invalid password');
+      throw new InvalidOldPasswordError();
     }
 
     validatePassword(newPassword);
@@ -146,7 +158,7 @@ export const mutations = {
     await getUser(ctx);
 
     if (!validator.isEmail(data.email)) {
-      throw new Error('Not a valid email');
+      throw new InvalidEmailError();
     }
 
     const existingUser = await ctx.db.query.user({
@@ -201,7 +213,7 @@ export const mutations = {
 
   async triggerPasswordReset(parent: any, { email }: User, ctx: Context) {
     if (!validator.isEmail(email)) {
-      throw new Error('Not a valid email');
+      throw new InvalidEmailError();
     }
 
     const user = await ctx.db.query.user({ where: { email } });
@@ -243,16 +255,16 @@ export const mutations = {
     ctx: Context
   ) {
     if (!resetToken || !password) {
-      throw new Error('Forgot password or resetToken');
+      throw new MissingDataError();
     }
     const user = await ctx.db.query.user({
       where: { email }
     });
     if (!user || !user.resetExpires || user.resetToken !== resetToken) {
-      throw new Error(`No user found for given resetToken`);
+      throw new UserNotFoundError();
     }
     if (new Date() > new Date(user.resetExpires)) {
-      throw new Error('resetToken expired');
+      throw new ResetTokenExpiredError();
     }
 
     validatePassword(password);

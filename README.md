@@ -134,3 +134,35 @@ mutation login($email: String!, $password: String!) {
 ```
 
 And then save the token to `localStorage`. Now you need to send the token with every request. If you are using Apollo, [the documentation](https://www.apollographql.com/docs/react/recipes/authentication.html#Header) has a great example on how to do this.
+
+## Adding custom fields to the User type
+
+If you wish to expose some fields on the User type that are not exposed in our [schema.graphql](./schema.graphql), you can provide your own User. In your own `schema.graphql`, do something like the following:
+
+```graphql
+# import Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
+
+type Query {
+  currentUser: User
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  inviteAccepted: Boolean!
+  deletedAt: DateTime
+  isSuper: Boolean!
+  isWillingToDance: Boolean!
+}
+```
+
+> `extend type User` would save some copy/pasta here, but unfortunately that doesn't work yet in `graphql-js`. [More info](https://github.com/graphcool/graphql-import/issues/42#issuecomment-357693183).
+
+## Signup only by invite
+
+By default everyone can signup for your project. But what if you want to only allow invite by signup? In this case you need to leave out the `Mutation.signup` import. Example:
+
+```graphql
+# import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/@volst/prisma-auth/schema.graphql"
+```

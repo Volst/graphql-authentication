@@ -6,6 +6,7 @@ export interface IPrismaAuthConfig {
   mailer?: Email;
   mailAppUrl?: string;
   secret: string;
+  requiredConfirmedEmailForLogin?: boolean;
   hookInviteUserPostCreate?: (
     data: any,
     ctx: Context,
@@ -16,5 +17,8 @@ export interface IPrismaAuthConfig {
 // Yup, doing this only for static type checking...
 // However one day we might want to check some options at compile time
 export function prismaAuthConfig(options: IPrismaAuthConfig) {
-  return options;
+  const defaults = {
+    requiredConfirmedEmailForLogin: false
+  };
+  return Object.assign(defaults, options);
 }

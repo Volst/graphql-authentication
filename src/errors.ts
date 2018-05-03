@@ -46,6 +46,13 @@ export const UserDeletedError = createError('UserDeletedError', {
   message: 'User has been deleted.'
 });
 
+export const UserEmailUnconfirmedError = createError(
+  'UserEmailUnconfirmedError',
+  {
+    message: 'Users email has not been confirmed yet.'
+  }
+);
+
 export const InvalidOldPasswordError = createError('InvalidOldPasswordError', {
   message: 'Invalid old password.'
 });

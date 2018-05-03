@@ -34,7 +34,8 @@ const server = new GraphQLServer({
     prismaAuth: prismaAuthConfig({
       secret: 'wherearemyshoes',
       mailer,
-      mailAppUrl: 'http://example.com'
+      mailAppUrl: 'http://example.com',
+      requiredConfirmedEmailForLogin: true
     })
   })
 });

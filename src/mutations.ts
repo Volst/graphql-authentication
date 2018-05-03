@@ -15,7 +15,8 @@ import {
   UserInviteNotAcceptedError,
   UserDeletedError,
   InvalidOldPasswordError,
-  InvalidEmailConfirmToken
+  InvalidEmailConfirmToken,
+  UserEmailUnconfirmedError
 } from './errors';
 
 function generateToken(user: User, ctx: Context) {
@@ -158,6 +159,10 @@ export const mutations = {
 
     if (user.deletedAt) {
       throw new UserDeletedError();
+    }
+
+    if (ctx.prismaAuth.requiredConfirmedEmailForLogin && !user.emailConfirmed) {
+      throw new UserEmailUnconfirmedError();
     }
 
     const valid = await bcrypt.compare(password, user.password);

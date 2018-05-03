@@ -175,3 +175,15 @@ By default everyone can signup for your project. But what if you want to only al
 ```graphql
 # import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/@volst/prisma-auth/schema.graphql"
 ```
+
+## Making email confirmation required before login
+
+After a user signups via the `signup` endpoint, they will get an email with a link in it to confirm their email. Meanwhile they can still login in the app. This is done to not disturb the users flow too much (e.g. services like Twitter do this too). It is left open to the project to block the user after a while. With the fields `emailConfirmed` and `joinedAt` on the User you can perhaps display a warning in your frontend or disallow certain features.
+
+However, you might want to block the user from logging in at all when their email is not yet confirmed. In this case you need to pass this option:
+
+```js
+prismaAuth: prismaAuthConfig({
+  requiredConfirmedEmailForLogin: true
+})
+```

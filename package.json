@@ -1,6 +1,6 @@
 {
   "name": "@volst/prisma-auth",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Authentication with Prisma",
   "author": "kees@volst.nl",
   "repository": "Volst/prisma-auth",

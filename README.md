@@ -43,7 +43,7 @@ In your `schema.graphql` for your own server, add something like the following (
 # import Query.*, Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
 ```
 
-# Step 3
+## Step 3
 
 In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
@@ -88,19 +88,19 @@ Lastly, if you want to send emails, you should copy the email templates to your 
 
 Mutations:
 
-- `signUpByInvite`
-- `signup`
-- `confirmEmail`
-- `inviteUser`
-- `login`
-- `changePassword`
-- `updateCurrentUser`
-- `trigerPasswordReset`
-- `passwordReset`
+* `signUpByInvite`
+* `signup`
+* `confirmEmail`
+* `inviteUser`
+* `login`
+* `changePassword`
+* `updateCurrentUser`
+* `trigerPasswordReset`
+* `passwordReset`
 
 Queries:
 
-- `currentUser`
+* `currentUser`
 
 For more details take a look at [schema.graphql](./schema.graphql).
 
@@ -137,7 +137,8 @@ const Mutation = {
 mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     token
-    user { # optional
+    user {
+      # optional
       name
     }
   }
@@ -193,5 +194,5 @@ However, you might want to block the user from logging in at all when their emai
 ```js
 prismaAuth: prismaAuthConfig({
   requiredConfirmedEmailForLogin: true
-})
+});
 ```

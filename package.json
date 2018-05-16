@@ -30,7 +30,7 @@
     "nodemon": "^1.17.3",
     "prettier": "^1.12.1",
     "pretty-quick": "^1.4.1",
-    "prisma-binding": "^1.5.18",
+    "prisma-binding": "^2.0.0",
     "pug": "^2.0.3",
     "ts-node": "^6.0.2",
     "tslint": "^5.9.1",
@@ -45,10 +45,10 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.2.1",
     "uuid": "^3.2.1",
-    "validator": "^9.4.1"
+    "validator": "^10.2.0"
   },
   "peerDependencies": {
     "email-templates": "^3.6.0",
-    "prisma-binding": "^1.5.18"
+    "prisma-binding": "^2.0.0"
   }
 }

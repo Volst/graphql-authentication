@@ -14,7 +14,7 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 
 # Motivation
 
-The examples in the Prisma repo have a very basic example on [how to do auth](https://github.com/graphcool/prisma/tree/master/examples/auth), but after that you’re on your own. You still need to build features like password reset and signup. **That’s a lot of boilerplate!** Nobody wants that.
+The examples in the Prisma repo have a very basic example on [how to do auth](https://github.com/prismagraphql/prisma/tree/master/examples/archive/auth), but after that you’re on your own. You still need to build features like password reset and signup. **That’s a lot of boilerplate!**
 
 The intention with this package is **to let you write as less authentication-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 

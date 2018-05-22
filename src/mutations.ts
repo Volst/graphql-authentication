@@ -85,7 +85,7 @@ export const mutations = {
 
     const newUser = await ctx.db.mutation.createUser({
       data: {
-        name: data.email,
+        name: data.name,
         email: data.email,
         password: hashedPassword,
         emailConfirmToken,

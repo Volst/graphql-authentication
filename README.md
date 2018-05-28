@@ -48,7 +48,7 @@ In your `schema.graphql` for your own server, add something like the following (
 In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
 ```js
-import { authQueries, authMutations, PrismaAuthConfig } from '../src';
+import { authQueries, authMutations, prismaAuthConfig } from '@volst/prisma-auth';
 import * as Email from 'email-templates';
 
 const resolvers = {

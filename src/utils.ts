@@ -9,7 +9,7 @@ export interface Context {
   request: any;
 }
 
-export function getUserId(ctx: Context): string {
+function _getUserId(ctx: Context): string {
   const Authorization = ctx.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
@@ -18,7 +18,14 @@ export function getUserId(ctx: Context): string {
     };
     return userId;
   }
+  return '';
+}
 
+export function getUserId(ctx: Context): string {
+  const userId = _getUserId(ctx);
+  if (userId) {
+    return userId;
+  }
   throw new AuthError();
 }
 
@@ -32,7 +39,9 @@ export class AuthError extends Error {
   }
 }
 
-// TODO: we might want to add some parameters to easily add permissions or whatever.
+/**
+ * @deprecated Use prisma-binding's forwardTo('db') method instead in combination with graphql-shield to handle permissions.
+ */
 export function forwardTo({
   unauthorized,
   bindingName
@@ -46,4 +55,8 @@ export function forwardTo({
     }
     return pForwardTo(bindingName || 'db')(parent, args, ctx, info);
   };
+}
+
+export function isAuthResolver(parent: any, args: any, ctx: Context) {
+  return !!_getUserId(ctx);
 }

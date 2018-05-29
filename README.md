@@ -10,7 +10,7 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 * Password reset
 * Change password of current user
 * Update current user info
-* Put resolvers behind login
+* Support for [graphql-shield](https://github.com/maticzav/graphql-shield) to deal with permissions
 
 # Motivation
 
@@ -104,9 +104,34 @@ Queries:
 
 For more details take a look at [schema.graphql](./schema.graphql).
 
+## Authentication on endpoints
+
+On some of your endpoints you might want to require that the user is logged in, or only allow the user to see the data if they have a specific role. A very powerful package exists for this, [graphql-shield](https://github.com/maticzav/graphql-shield):
+
+```js
+import { shield, rule } from 'graphql-shield';
+import { isAuthResolver } from '@volst/prisma-auth';
+
+const isAuth = rule()(isAuthResolver);
+
+const permissions = shield({
+  Mutation: {
+    publish: isAuth
+  }
+});
+
+const server = new GraphQLServer({
+  typeDefs: './schema.graphql',
+  resolvers,
+  middlewares: [permissions]
+});
+```
+
+Take a look at the [graphql-shield README](https://github.com/maticzav/graphql-shield/blob/master/README.md) to find out more.
+
 ## Helper utilities
 
-Get the current user in a resolver:
+Get the current user in a resolver (performs a request to Prisma):
 
 ```js
 import { getUser } from '@volst/prisma-auth';
@@ -119,13 +144,16 @@ const Mutation = {
 };
 ```
 
-Forward a resolver directly to Prisma, and require that the user is logged in:
+Get only the current user ID in a resolver (without request to Prisma):
 
 ```js
-import { forwardTo } from '@volst/prisma-auth';
+import { getUserId } from '@volst/prisma-auth';
 
 const Mutation = {
-  publish: forwardTo()
+  async publish(parent, data, ctx) {
+    const userId = await getUser(ctx);
+    console.log('User', userId);
+  }
 };
 ```
 

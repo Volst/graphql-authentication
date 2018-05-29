@@ -151,7 +151,7 @@ import { getUserId } from '@volst/prisma-auth';
 
 const Mutation = {
   async publish(parent, data, ctx) {
-    const userId = await getUser(ctx);
+    const userId = await getUserId(ctx);
     console.log('User', userId);
   }
 };

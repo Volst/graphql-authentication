@@ -20,7 +20,7 @@ import {
 } from './errors';
 
 function generateToken(user: User, ctx: Context) {
-  return jwt.sign({ userId: user.id }, ctx.prismaAuth.secret);
+  return jwt.sign({ userId: user.id }, ctx.graphqlUser.secret);
 }
 
 function validatePassword(value: string) {
@@ -41,9 +41,7 @@ export const mutations = {
     if (!data.inviteToken || !data.email) {
       throw new MissingDataError();
     }
-    const user = await ctx.db.query.user({
-      where: { email: data.email }
-    });
+    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, data.email);
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -74,7 +72,10 @@ export const mutations = {
     if (!data.email) {
       throw new MissingDataError();
     }
-    const userExists = await ctx.db.exists.User({ email: data.email });
+    const userExists = await ctx.graphqlUser.adapter.userExistsByEmail(
+      ctx,
+      data.email
+    );
     if (userExists) {
       throw new UserEmailExistsError();
     }
@@ -83,26 +84,23 @@ export const mutations = {
     const hashedPassword = await getHashedPassword(data.password);
     const emailConfirmToken = uuidv4();
 
-    const newUser = await ctx.db.mutation.createUser({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-        emailConfirmToken,
-        emailConfirmed: false,
-        joinedAt: new Date().toISOString()
-      }
+    const newUser = await ctx.graphqlUser.adapter.createUser(ctx, {
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+      emailConfirmToken,
+      emailConfirmed: false,
+      joinedAt: new Date().toISOString()
     });
 
-    if (ctx.prismaAuth.mailer) {
-      console.log('EMAIL OCN', emailConfirmToken);
-      ctx.prismaAuth.mailer.send({
+    if (ctx.graphqlUser.mailer) {
+      ctx.graphqlUser.mailer.send({
         template: 'signupUser',
         message: {
           to: newUser.email
         },
         locals: {
-          mailAppUrl: ctx.prismaAuth.mailAppUrl,
+          mailAppUrl: ctx.graphqlUser.mailAppUrl,
           emailConfirmToken,
           email: newUser.email
         }
@@ -123,9 +121,7 @@ export const mutations = {
     if (!emailConfirmToken || !email) {
       throw new MissingDataError();
     }
-    const user = await ctx.db.query.user({
-      where: { email: email }
-    });
+    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -133,13 +129,14 @@ export const mutations = {
       throw new InvalidEmailConfirmToken();
     }
 
-    const updatedUser = await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: {
+    const updatedUser = await ctx.graphqlUser.adapter.updateUserConfirmToken(
+      ctx,
+      user.id,
+      {
         emailConfirmToken: '',
         emailConfirmed: true
       }
-    });
+    );
 
     return {
       token: generateToken(user, ctx),
@@ -148,7 +145,7 @@ export const mutations = {
   },
 
   async login(parent: any, { email, password }: User, ctx: Context) {
-    const user = await ctx.db.query.user({ where: { email } });
+    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -161,7 +158,10 @@ export const mutations = {
       throw new UserDeletedError();
     }
 
-    if (ctx.prismaAuth.requiredConfirmedEmailForLogin && !user.emailConfirmed) {
+    if (
+      ctx.graphqlUser.requiredConfirmedEmailForLogin &&
+      !user.emailConfirmed
+    ) {
       throw new UserEmailUnconfirmedError();
     }
 
@@ -171,11 +171,8 @@ export const mutations = {
     }
 
     // Purposefully async, this update doesn't matter that much.
-    ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: {
-        lastLogin: new Date().toISOString()
-      }
+    ctx.graphqlUser.adapter.updateUserLastLogin(ctx, user.id, {
+      lastLogin: new Date().toISOString()
     });
 
     return {
@@ -199,10 +196,11 @@ export const mutations = {
     validatePassword(newPassword);
     const password = await getHashedPassword(newPassword);
 
-    const newUser = await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: { password }
-    });
+    const newUser = await ctx.graphqlUser.adapter.updateUserPassword(
+      ctx,
+      user.id,
+      { password }
+    );
 
     return {
       id: newUser!.id
@@ -226,12 +224,13 @@ export const mutations = {
       throw new InvalidEmailError();
     }
 
-    const existingUser = await ctx.db.query.user({
-      where: { email: data.email }
-    });
+    const existingUser = await ctx.graphqlUser.adapter.findUserByEmail(
+      ctx,
+      data.email
+    );
     if (existingUser) {
-      if (ctx.prismaAuth.hookInviteUserPostCreate) {
-        await ctx.prismaAuth.hookInviteUserPostCreate(data, ctx, existingUser);
+      if (ctx.graphqlUser.hookInviteUserPostCreate) {
+        await ctx.graphqlUser.hookInviteUserPostCreate(data, ctx, existingUser);
       }
       return {
         id: existingUser.id
@@ -254,18 +253,18 @@ export const mutations = {
       }
     });
 
-    if (ctx.prismaAuth.hookInviteUserPostCreate) {
-      await ctx.prismaAuth.hookInviteUserPostCreate(data, ctx, newUser);
+    if (ctx.graphqlUser.hookInviteUserPostCreate) {
+      await ctx.graphqlUser.hookInviteUserPostCreate(data, ctx, newUser);
     }
 
-    if (ctx.prismaAuth.mailer) {
-      ctx.prismaAuth.mailer.send({
+    if (ctx.graphqlUser.mailer) {
+      ctx.graphqlUser.mailer.send({
         template: 'inviteUser',
         message: {
           to: newUser.email
         },
         locals: {
-          mailAppUrl: ctx.prismaAuth.mailAppUrl,
+          mailAppUrl: ctx.graphqlUser.mailAppUrl,
           inviteToken,
           email: newUser.email
         }
@@ -282,7 +281,7 @@ export const mutations = {
       throw new InvalidEmailError();
     }
 
-    const user = await ctx.db.query.user({ where: { email } });
+    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
     if (!user) {
       return { ok: true };
     }
@@ -295,18 +294,18 @@ export const mutations = {
     // Expires in two hours
     const resetExpires = new Date(now.getTime() + 7200000).toISOString();
 
-    await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: { resetToken, resetExpires }
+    await ctx.graphqlUser.adapter.updateUserResetToken(ctx, user.id, {
+      resetToken,
+      resetExpires
     });
 
-    if (ctx.prismaAuth.mailer) {
-      ctx.prismaAuth.mailer.send({
+    if (ctx.graphqlUser.mailer) {
+      ctx.graphqlUser.mailer.send({
         template: 'passwordReset',
         message: {
           to: user.email
         },
-        locals: { mailAppUrl: ctx.prismaAuth.mailAppUrl, resetToken, email }
+        locals: { mailAppUrl: ctx.graphqlUser.mailAppUrl, resetToken, email }
       });
     }
 
@@ -323,9 +322,7 @@ export const mutations = {
     if (!resetToken || !password) {
       throw new MissingDataError();
     }
-    const user = await ctx.db.query.user({
-      where: { email }
-    });
+    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
     if (!user || !user.resetExpires || user.resetToken !== resetToken) {
       throw new UserNotFoundError();
     }
@@ -357,10 +354,7 @@ export const mutations = {
   ) {
     const user = await getUser(ctx);
 
-    await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data
-    });
+    await ctx.graphqlUser.adapter.updateUserInfo(ctx, user.id, data);
 
     return user;
   }

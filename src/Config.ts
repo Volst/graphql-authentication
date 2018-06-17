@@ -1,8 +1,9 @@
 import * as Email from 'email-templates';
 import { User } from './generated/prisma';
 import { Context } from './utils';
+import { GraphqlUserPrismaAdapter } from './adapter/Prisma';
 
-export interface IPrismaAuthConfig {
+export interface IGraphqlUserConfig {
   mailer?: Email;
   mailAppUrl?: string;
   secret: string;
@@ -12,13 +13,13 @@ export interface IPrismaAuthConfig {
     ctx: Context,
     user: User
   ) => Promise<any>;
+  adapter: GraphqlUserPrismaAdapter;
 }
 
-// Yup, doing this only for static type checking...
-// However one day we might want to check some options at compile time
-export function prismaAuthConfig(options: IPrismaAuthConfig) {
+export function graphqlUserConfig(options: IGraphqlUserConfig) {
   const defaults = {
-    requiredConfirmedEmailForLogin: false
+    requiredConfirmedEmailForLogin: false,
+    adapter: new GraphqlUserPrismaAdapter()
   };
   return Object.assign(defaults, options);
 }

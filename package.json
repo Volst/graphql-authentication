@@ -1,9 +1,11 @@
 {
-  "name": "@volst/prisma-auth",
+  "name": "graphql-user",
   "version": "0.4.1",
-  "description": "Authentication with Prisma",
+  "description":
+    "Makes it super easy to do do boring user stuff with GraphQL (login, password reset, ...)",
   "author": "kees@volst.nl",
-  "repository": "Volst/prisma-auth",
+  "repository": "Volst/graphql-user",
+  "keywords": ["graphql", "user", "authentication", "login", "prisma"],
   "license": "ISC",
   "private": false,
   "main": "dist/src/index.js",

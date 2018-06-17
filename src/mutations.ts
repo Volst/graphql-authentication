@@ -52,15 +52,16 @@ export const mutations = {
     validatePassword(data.password);
     const hashedPassword = await getHashedPassword(data.password);
 
-    const updatedUser = await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: {
+    const updatedUser = await ctx.graphqlUser.adapter.updateUserCompleteInvite(
+      ctx,
+      user.id,
+      {
         name: data.name,
         inviteToken: '',
         inviteAccepted: true,
         password: hashedPassword
       }
-    });
+    );
 
     return {
       token: generateToken(user, ctx),
@@ -84,7 +85,7 @@ export const mutations = {
     const hashedPassword = await getHashedPassword(data.password);
     const emailConfirmToken = uuidv4();
 
-    const newUser = await ctx.graphqlUser.adapter.createUser(ctx, {
+    const newUser = await ctx.graphqlUser.adapter.createUserBySignup(ctx, {
       name: data.name,
       email: data.email,
       password: hashedPassword,
@@ -242,15 +243,13 @@ export const mutations = {
     // uuid v4 is safe to be used as random token generator.
     const inviteToken = uuidv4();
 
-    const newUser = await ctx.db.mutation.createUser({
-      data: {
-        email: data.email,
-        inviteToken,
-        inviteAccepted: false,
-        password: '',
-        name: '',
-        joinedAt: new Date().toISOString()
-      }
+    const newUser = await ctx.graphqlUser.adapter.createUserByInvite(ctx, {
+      email: data.email,
+      inviteToken,
+      inviteAccepted: false,
+      password: '',
+      name: '',
+      joinedAt: new Date().toISOString()
     });
 
     if (ctx.graphqlUser.hookInviteUserPostCreate) {
@@ -333,13 +332,12 @@ export const mutations = {
     validatePassword(password);
     const hashedPassword = await getHashedPassword(password);
 
-    await ctx.db.mutation.updateUser({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        resetToken: '',
-        resetExpires: undefined
-      }
+    await ctx.graphqlUser.adapter.updateUserResetToken(ctx, user.id, {
+      resetToken: '',
+      resetExpires: undefined
+    });
+    await ctx.graphqlUser.adapter.updateUserPassword(ctx, user.id, {
+      password: hashedPassword
     });
 
     return {

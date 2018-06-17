@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { forwardTo as pForwardTo } from 'prisma-binding';
 import { IGraphqlUserConfig } from './Config';
+import { ID } from './Adapter';
 
 export interface Context {
   graphqlUser: IGraphqlUserConfig;
@@ -12,7 +13,7 @@ function _getUserId(ctx: Context): string {
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
     const { userId } = jwt.verify(token, ctx.graphqlUser.secret) as {
-      userId: string;
+      userId: ID;
     };
     return userId;
   }

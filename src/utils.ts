@@ -30,7 +30,7 @@ export function getUserId(ctx: Context): string {
 }
 
 export function getUser(ctx: Context): Promise<any> {
-  return ctx.db.query.user({ where: { id: getUserId(ctx) } });
+  return ctx.graphqlUser.adapter.findUserById(ctx, getUserId(ctx));
 }
 
 export class AuthError extends Error {

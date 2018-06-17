@@ -1,7 +1,7 @@
 import { Context } from '../utils';
 
 export class GraphqlUserPrismaAdapter {
-  findUserById(ctx: Context, id: string, info: any) {
+  findUserById(ctx: Context, id: string, info?: any) {
     return ctx.db.query.user({ where: { id } }, info);
   }
   findUserByEmail(ctx: Context, email: string) {
@@ -16,6 +16,12 @@ export class GraphqlUserPrismaAdapter {
     return ctx.db.mutation.createUser({
       data
     });
+  }
+  createUserBySignup(ctx: Context, data: any) {
+    return this.createUser(ctx, data);
+  }
+  createUserByInvite(ctx: Context, data: any) {
+    return this.createUser(ctx, data);
   }
   updateUser(ctx: Context, userId: string, data: any) {
     return ctx.db.mutation.updateUser({
@@ -36,6 +42,9 @@ export class GraphqlUserPrismaAdapter {
     return this.updateUser(ctx, userId, data);
   }
   updateUserInfo(ctx: Context, userId: string, data: any) {
+    return this.updateUser(ctx, userId, data);
+  }
+  updateUserCompleteInvite(ctx: Context, userId: string, data: any) {
     return this.updateUser(ctx, userId, data);
   }
 }

@@ -1,6 +1,6 @@
 # GraphQL User
 
-A very opinionated user authorization package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.
+A very opinionated user authentication package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.
 
 By default GraphQL User has an adapter for [Prisma](https://www.prisma.io/), but you can use any data layer (e.g. an ORM) you want with it. Please write a PR with another adapter!
 
@@ -16,7 +16,7 @@ By default GraphQL User has an adapter for [Prisma](https://www.prisma.io/), but
 
 # Motivation
 
-The examples in the Prisma repo have a very basic example on [how to do auth](https://github.com/prismagraphql/prisma/tree/master/examples/archive/auth), but after that you’re on your own. You still need to build features like password reset and signup. **That’s a lot of boilerplate!**
+Adding user authentication seems simple; there are lots of examples on how to write a "login" and a "signup" resolver. You implement it in your own project and continue working. After a while you'll have users forgetting their password so you need to build that. Then you want to be able to invite users, so you'll build that. After a while you have a lot of boilerplate code related to user authentication.
 
 The intention with this package is **to let you write as less user-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 
@@ -75,7 +75,6 @@ const server = new GraphQLServer({
       mailer: new Email(),
       // Optional, the URL to your frontend which is used in emails
       mailAppUrl: 'http://example.com',
-      // adapter: prisma,
     })
   })
 });
@@ -148,7 +147,7 @@ Take a look at the [graphql-shield README](https://github.com/maticzav/graphql-s
 
 ## Helper utilities
 
-Get the current user in a resolver (performs a request to Prisma):
+Get the current user in a resolver (performs a request to your data layer):
 
 ```js
 import { getUser } from 'graphql-user';
@@ -161,7 +160,7 @@ const Mutation = {
 };
 ```
 
-Get only the current user ID in a resolver (without request to Prisma):
+Get only the current user ID in a resolver (without request to your data layer):
 
 ```js
 import { getUserId } from 'graphql-user';

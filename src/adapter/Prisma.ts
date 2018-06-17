@@ -1,11 +1,12 @@
 import { Context as _Context } from '../utils';
-import { Prisma } from '../generated/prisma';
+import { Prisma, User } from '../generated/prisma';
+import { GraphqlUserAdapter, ID } from '../Adapter';
 
 interface Context extends _Context {
   db?: Prisma;
 }
 
-export class GraphqlUserPrismaAdapter {
+export class GraphqlUserPrismaAdapter implements GraphqlUserAdapter {
   private db(ctx: Context) {
     if (!ctx.db) {
       throw new Error(
@@ -15,18 +16,21 @@ export class GraphqlUserPrismaAdapter {
     return ctx.db;
   }
 
-  findUserById(ctx: Context, id: string, info?: any) {
+  findUserById(ctx: Context, id: ID, info?: any) {
     return this.db(ctx).query.user({ where: { id } }, info);
   }
-  findUserByEmail(ctx: Context, email: string) {
-    return this.db(ctx).query.user({
-      where: { email: email }
-    });
+  findUserByEmail(ctx: Context, email: string, info?: any) {
+    return this.db(ctx).query.user(
+      {
+        where: { email: email }
+      },
+      info
+    );
   }
   userExistsByEmail(ctx: Context, email: string) {
     return this.db(ctx).exists.User({ email });
   }
-  createUser(ctx: Context, data: any) {
+  private createUser(ctx: Context, data: any) {
     return this.db(ctx).mutation.createUser({
       data
     });
@@ -37,28 +41,28 @@ export class GraphqlUserPrismaAdapter {
   createUserByInvite(ctx: Context, data: any) {
     return this.createUser(ctx, data);
   }
-  updateUser(ctx: Context, userId: string, data: any) {
+  private updateUser(ctx: Context, userId: ID, data: any) {
     return this.db(ctx).mutation.updateUser({
       where: { id: userId },
       data
     });
   }
-  updateUserConfirmToken(ctx: Context, userId: string, data: any) {
+  updateUserConfirmToken(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserLastLogin(ctx: Context, userId: string, data: any) {
+  updateUserLastLogin(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserPassword(ctx: Context, userId: string, data: any) {
+  updateUserPassword(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserResetToken(ctx: Context, userId: string, data: any) {
+  updateUserResetToken(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserInfo(ctx: Context, userId: string, data: any) {
+  updateUserInfo(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserCompleteInvite(ctx: Context, userId: string, data: any) {
+  updateUserCompleteInvite(ctx: Context, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
 }

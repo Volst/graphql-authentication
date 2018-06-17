@@ -40,7 +40,7 @@
     "email-templates": "^3.6.0",
     "graphql-cli": "^2.15.13",
     "graphql-request": "^1.6.0",
-    "graphql-yoga": "1.13.1",
+    "graphql-yoga": "1.14.8",
     "husky": "^0.14.3",
     "jest": "^23.1.0",
     "nodemon": "^1.17.3",

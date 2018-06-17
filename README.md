@@ -1,6 +1,8 @@
-# Prisma Auth
+# GraphQL User
 
-A very opinionated authorization package for [Prisma](https://www.prisma.io/), a GraphQL database API. It uses old-school email/password authentication.
+A very opinionated user authorization package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.
+
+By default GraphQL User has an adapter for [Prisma](https://www.prisma.io/), but you can use any data layer (e.g. an ORM) you want with it. Please write a PR with another adapter!
 
 **Features:**
 
@@ -16,7 +18,7 @@ A very opinionated authorization package for [Prisma](https://www.prisma.io/), a
 
 The examples in the Prisma repo have a very basic example on [how to do auth](https://github.com/prismagraphql/prisma/tree/master/examples/archive/auth), but after that you’re on your own. You still need to build features like password reset and signup. **That’s a lot of boilerplate!**
 
-The intention with this package is **to let you write as less authentication-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
+The intention with this package is **to let you write as less user-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 
 > If this package is too opinionated for you, you could still copy/paste parts of it in your application!
 
@@ -25,11 +27,11 @@ The intention with this package is **to let you write as less authentication-rel
 Node v8+ should be used. Install with Yarn or npm:
 
 ```
-yarn add @volst/prisma-auth email-templates
-npm i @volst/prisma-auth email-templates
+yarn add graphql-user email-templates
+npm i graphql-user email-templates
 ```
 
-# Usage
+# Usage with Prisma
 
 ## Step 1
 
@@ -40,7 +42,7 @@ In your Prisma `datamodel.graphql` file, add this [User model](./example/datamod
 In your `schema.graphql` for your own server, add something like the following (you can also import specific endpoints only):
 
 ```graphql
-# import Query.*, Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
+# import Query.*, Mutation.* from "node_modules/graphql-user/schema.graphql"
 ```
 
 ## Step 3
@@ -48,7 +50,7 @@ In your `schema.graphql` for your own server, add something like the following (
 In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
 ```js
-import { authQueries, authMutations, prismaAuthConfig } from '@volst/prisma-auth';
+import { authQueries, authMutations, graphqlUserConfig } from 'graphql-user';
 import * as Email from 'email-templates';
 
 const resolvers = {
@@ -66,13 +68,14 @@ const server = new GraphQLServer({
   context: req => ({
     ...req,
     db: new Prisma({...}),
-    prismaAuth: prismaAuthConfig({
+    graphqlUser: graphqlUserConfig({
       // Required, used for signing JWT tokens
       secret: 'wheredidthesodago',
       // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
       mailer: new Email(),
       // Optional, the URL to your frontend which is used in emails
       mailAppUrl: 'http://example.com',
+      // adapter: prisma,
     })
   })
 });
@@ -81,6 +84,20 @@ const server = new GraphQLServer({
 ## Step 4
 
 Lastly, if you want to send emails, you should copy the email templates to your own project. Checkout [the example email templates](./example/emails).
+
+# Usage without Prisma
+
+Since Prisma is just an adapter, it is possible to use any ORM or package you want to mutate and query your data.
+
+```js
+class GraphqlUserSequelizeAdapter {
+  //
+}
+
+graphqlUser: GraphqlUserSequelizeAdapter({
+  adapter: new GraphqlUser()
+});
+```
 
 # Documentation
 
@@ -110,7 +127,7 @@ On some of your endpoints you might want to require that the user is logged in, 
 
 ```js
 import { shield, rule } from 'graphql-shield';
-import { isAuthResolver } from '@volst/prisma-auth';
+import { isAuthResolver } from 'graphql-user';
 
 const isAuth = rule()(isAuthResolver);
 
@@ -134,7 +151,7 @@ Take a look at the [graphql-shield README](https://github.com/maticzav/graphql-s
 Get the current user in a resolver (performs a request to Prisma):
 
 ```js
-import { getUser } from '@volst/prisma-auth';
+import { getUser } from 'graphql-user';
 
 const Mutation = {
   async publish(parent, data, ctx) {
@@ -147,7 +164,7 @@ const Mutation = {
 Get only the current user ID in a resolver (without request to Prisma):
 
 ```js
-import { getUserId } from '@volst/prisma-auth';
+import { getUserId } from 'graphql-user';
 
 const Mutation = {
   async publish(parent, data, ctx) {
@@ -180,7 +197,7 @@ And then save the token to `localStorage`. Now you need to send the token with e
 If you wish to expose some fields on the User type that are not exposed in our [schema.graphql](./schema.graphql), you can provide your own User. In your own `schema.graphql`, do something like the following:
 
 ```graphql
-# import Mutation.* from "node_modules/@volst/prisma-auth/schema.graphql"
+# import Mutation.* from "node_modules/graphql-user/schema.graphql"
 
 type Query {
   currentUser: User
@@ -210,7 +227,7 @@ If for example you do not want the `joinedAt` field to be exposed, you can simpl
 By default everyone can signup for your project. But what if you want to only allow invite by signup? In this case you need to leave out the `Mutation.signup` import. Example:
 
 ```graphql
-# import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/@volst/prisma-auth/schema.graphql"
+# import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/graphql-user/schema.graphql"
 ```
 
 ## Making email confirmation required before login
@@ -220,7 +237,7 @@ After a user signups via the `signup` endpoint, they will get an email with a li
 However, you might want to block the user from logging in at all when their email is not yet confirmed. In this case you need to pass this option:
 
 ```js
-prismaAuth: prismaAuthConfig({
+graphqlUser: graphqlUserConfig({
   requiredConfirmedEmailForLogin: true
 });
 ```

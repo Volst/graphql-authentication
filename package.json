@@ -23,7 +23,7 @@
     "schema.graphql"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "lint": "tslint -p .",
     "prepublishOnly": "npm run -s build",
     "precommit": "pretty-quick --staged",

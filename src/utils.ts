@@ -1,10 +1,8 @@
 import * as jwt from 'jsonwebtoken';
-import { Prisma } from './generated/prisma';
 import { forwardTo as pForwardTo } from 'prisma-binding';
 import { IGraphqlUserConfig } from './Config';
 
 export interface Context {
-  db: Prisma;
   graphqlUser: IGraphqlUserConfig;
   request: any;
 }

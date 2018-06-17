@@ -50,7 +50,7 @@ In your `schema.graphql` for your own server, add something like the following (
 In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
 
 ```js
-import { authQueries, authMutations, graphqlUserConfig } from 'graphql-user';
+import { authQueries, authMutations, graphqlUserConfig, GraphqlUserPrismaAdapter } from 'graphql-user';
 import * as Email from 'email-templates';
 
 const resolvers = {
@@ -69,6 +69,7 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({...}),
     graphqlUser: graphqlUserConfig({
+      adapter: new GraphqlUserPrismaAdapter(),
       // Required, used for signing JWT tokens
       secret: 'wheredidthesodago',
       // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)

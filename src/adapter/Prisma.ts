@@ -1,19 +1,33 @@
-import { Context } from '../utils';
+import { Context as _Context } from '../utils';
+import { Prisma } from '../generated/prisma';
+
+interface Context extends _Context {
+  db?: Prisma;
+}
 
 export class GraphqlUserPrismaAdapter {
+  private db(ctx: Context) {
+    if (!ctx.db) {
+      throw new Error(
+        'The Prisma binding is not attached to the `db` property on your context.'
+      );
+    }
+    return ctx.db;
+  }
+
   findUserById(ctx: Context, id: string, info?: any) {
-    return ctx.db.query.user({ where: { id } }, info);
+    return this.db(ctx).query.user({ where: { id } }, info);
   }
   findUserByEmail(ctx: Context, email: string) {
-    return ctx.db.query.user({
+    return this.db(ctx).query.user({
       where: { email: email }
     });
   }
   userExistsByEmail(ctx: Context, email: string) {
-    return ctx.db.exists.User({ email });
+    return this.db(ctx).exists.User({ email });
   }
   createUser(ctx: Context, data: any) {
-    return ctx.db.mutation.createUser({
+    return this.db(ctx).mutation.createUser({
       data
     });
   }
@@ -24,7 +38,7 @@ export class GraphqlUserPrismaAdapter {
     return this.createUser(ctx, data);
   }
   updateUser(ctx: Context, userId: string, data: any) {
-    return ctx.db.mutation.updateUser({
+    return this.db(ctx).mutation.updateUser({
       where: { id: userId },
       data
     });

@@ -1,29 +1,32 @@
 import { Prisma, User } from './generated/prisma';
-import {
-  GraphqlAuthenticationAdapter,
-  ID,
-  Context as _Context
-} from 'graphql-authentication';
-
-interface Context extends _Context {
-  db?: Prisma;
-}
+import { GraphqlAuthenticationAdapter, ID } from 'graphql-authentication';
 
 export class GraphqlAuthenticationPrismaAdapter
   implements GraphqlAuthenticationAdapter {
-  private db(ctx: Context) {
-    if (!ctx.db) {
-      throw new Error(
-        'The Prisma binding is not attached to the `db` property on your context.'
-      );
+  prismaContextName = 'db';
+
+  constructor(options: { prismaContextName?: string }) {
+    if (options.prismaContextName) {
+      this.prismaContextName = options.prismaContextName;
     }
-    return ctx.db;
   }
 
-  findUserById(ctx: Context, id: ID, info?: any) {
+  private db(ctx: object) {
+    const db: Prisma = ctx[this.prismaContextName];
+    if (!db) {
+      throw new Error(
+        `The Prisma binding is not attached to the \`${
+          this.prismaContextName
+        }\` property on your context.`
+      );
+    }
+    return db;
+  }
+
+  findUserById(ctx: object, id: ID, info?: any) {
     return this.db(ctx).query.user({ where: { id } }, info);
   }
-  findUserByEmail(ctx: Context, email: string, info?: any) {
+  findUserByEmail(ctx: object, email: string, info?: any) {
     return this.db(ctx).query.user(
       {
         where: { email: email }
@@ -31,42 +34,42 @@ export class GraphqlAuthenticationPrismaAdapter
       info
     );
   }
-  userExistsByEmail(ctx: Context, email: string) {
+  userExistsByEmail(ctx: object, email: string) {
     return this.db(ctx).exists.User({ email });
   }
-  private createUser(ctx: Context, data: any) {
+  private createUser(ctx: object, data: any) {
     return this.db(ctx).mutation.createUser({
       data
     });
   }
-  createUserBySignup(ctx: Context, data: any) {
+  createUserBySignup(ctx: object, data: any) {
     return this.createUser(ctx, data);
   }
-  createUserByInvite(ctx: Context, data: any) {
+  createUserByInvite(ctx: object, data: any) {
     return this.createUser(ctx, data);
   }
-  private updateUser(ctx: Context, userId: ID, data: any) {
+  private updateUser(ctx: object, userId: ID, data: any) {
     return this.db(ctx).mutation.updateUser({
       where: { id: userId },
       data
     });
   }
-  updateUserConfirmToken(ctx: Context, userId: ID, data: any) {
+  updateUserConfirmToken(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserLastLogin(ctx: Context, userId: ID, data: any) {
+  updateUserLastLogin(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserPassword(ctx: Context, userId: ID, data: any) {
+  updateUserPassword(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserResetToken(ctx: Context, userId: ID, data: any) {
+  updateUserResetToken(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserInfo(ctx: Context, userId: ID, data: any) {
+  updateUserInfo(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
-  updateUserCompleteInvite(ctx: Context, userId: ID, data: any) {
+  updateUserCompleteInvite(ctx: object, userId: ID, data: any) {
     return this.updateUser(ctx, userId, data);
   }
 }

@@ -39,7 +39,7 @@ const server = new GraphQLServer({
       endpoint: 'http://localhost:4466',
       debug: true
     }),
-    graphqlUser: graphqlAuthenticationConfig({
+    graphqlAuthentication: graphqlAuthenticationConfig({
       adapter: new GraphqlAuthenticationPrismaAdapter(),
       secret: 'wherearemyshoes',
       mailer,

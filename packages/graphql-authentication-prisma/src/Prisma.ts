@@ -5,8 +5,8 @@ export class GraphqlAuthenticationPrismaAdapter
   implements GraphqlAuthenticationAdapter {
   prismaContextName = 'db';
 
-  constructor(options: { prismaContextName?: string }) {
-    if (options.prismaContextName) {
+  constructor(options: { prismaContextName?: string } = {}) {
+    if (options && options.prismaContextName) {
       this.prismaContextName = options.prismaContextName;
     }
   }

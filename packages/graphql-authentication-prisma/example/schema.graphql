@@ -1,4 +1,4 @@
-# import Query.*, Mutation.* from "../schema.graphql"
+# import Query.*, Mutation.* from "../../../node_modules/graphql-authentication/schema.graphql"
 
 type Query {
   timeline: [Post!]!

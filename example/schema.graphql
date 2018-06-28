@@ -1,0 +1,9 @@
+# import Query.*, Mutation.* from "../schema.graphql"
+
+type Query {
+  timeline: [Post!]!
+}
+
+type Post {
+  name: String!
+}

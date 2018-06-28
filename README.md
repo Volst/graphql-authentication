@@ -6,17 +6,17 @@ By default GraphQL User has an adapter for [Prisma](https://www.prisma.io/), but
 
 **Features:**
 
-* Signup with good ol' email/password and confirmation email
-* Login
-* Invite another user (sends email)
-* Password reset
-* Change password of current user
-* Update current user info
-* Support for [graphql-shield](https://github.com/maticzav/graphql-shield) to deal with permissions
+- Signup with good ol' email/password and confirmation email
+- Login
+- Invite another user (sends email)
+- Password reset
+- Change password of current user
+- Update current user info
+- Support for [graphql-shield](https://github.com/maticzav/graphql-shield) to deal with permissions
 
 # Motivation
 
-Adding user authentication seems simple; there are lots of examples on how to write a "login" and a "signup" resolver. You implement it in your own project and continue working. After a while you'll have users forgetting their password so you need to build that. Then you want to be able to invite users, so you'll build that. After a while you have a lot of boilerplate code related to user authentication.
+Adding user authentication seems simple; there are lots of examples on how to write a "login" and a "signup" resolver. You implement it in your own project and continue working. After a while you'll have users forgetting their password so you need to build something for that. Then you want to be able to invite users, ... you get the idea. After a while you have a lot of boilerplate code related to user authentication.
 
 The intention with this package is **to let you write as less user-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 
@@ -105,19 +105,19 @@ graphqlUser: GraphqlUserSequelizeAdapter({
 
 Mutations:
 
-* `signUpByInvite`
-* `signup`
-* `confirmEmail`
-* `inviteUser`
-* `login`
-* `changePassword`
-* `updateCurrentUser`
-* `trigerPasswordReset`
-* `passwordReset`
+- `signUpByInvite`
+- `signup`
+- `confirmEmail`
+- `inviteUser`
+- `login`
+- `changePassword`
+- `updateCurrentUser`
+- `trigerPasswordReset`
+- `passwordReset`
 
 Queries:
 
-* `currentUser`
+- `currentUser`
 
 For more details take a look at [schema.graphql](./schema.graphql).
 

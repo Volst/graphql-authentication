@@ -11,7 +11,10 @@ import {
 
 const resolvers = {
   Query: {
-    ...authQueries
+    ...authQueries,
+    timeline() {
+      return [{ name: 'Testje' }];
+    }
   },
   Mutation: {
     ...authMutations
@@ -28,7 +31,7 @@ const mailer = new Email({
 });
 
 const server = new GraphQLServer({
-  typeDefs: './schema.graphql',
+  typeDefs: './example/schema.graphql',
   resolvers,
   context: req => ({
     ...req,
@@ -37,11 +40,11 @@ const server = new GraphQLServer({
       debug: true
     }),
     graphqlUser: graphqlUserConfig({
+      adapter: new GraphqlUserPrismaAdapter(),
       secret: 'wherearemyshoes',
       mailer,
       mailAppUrl: 'http://example.com',
-      requiredConfirmedEmailForLogin: true,
-      adapter: new GraphqlUserPrismaAdapter()
+      requiredConfirmedEmailForLogin: true
     })
   })
 });

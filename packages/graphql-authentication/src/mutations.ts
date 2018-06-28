@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import * as uuidv4 from 'uuid/v4';
 import { getUser, Context } from './utils';
-import { User, UserUpdateInput } from './generated/prisma';
+import { User } from './Adapter';
 import {
   MissingDataError,
   ResetTokenExpiredError,
@@ -20,7 +20,7 @@ import {
 } from './errors';
 
 function generateToken(user: User, ctx: Context) {
-  return jwt.sign({ userId: user.id }, ctx.graphqlUser.secret);
+  return jwt.sign({ userId: user.id }, ctx.graphqlAuthentication.secret);
 }
 
 function validatePassword(value: string) {
@@ -41,7 +41,10 @@ export const mutations = {
     if (!data.inviteToken || !data.email) {
       throw new MissingDataError();
     }
-    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, data.email);
+    const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
+      ctx,
+      data.email
+    );
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -52,7 +55,7 @@ export const mutations = {
     validatePassword(data.password);
     const hashedPassword = await getHashedPassword(data.password);
 
-    const updatedUser = await ctx.graphqlUser.adapter.updateUserCompleteInvite(
+    const updatedUser = await ctx.graphqlAuthentication.adapter.updateUserCompleteInvite(
       ctx,
       user.id,
       {
@@ -73,7 +76,7 @@ export const mutations = {
     if (!data.email) {
       throw new MissingDataError();
     }
-    const userExists = await ctx.graphqlUser.adapter.userExistsByEmail(
+    const userExists = await ctx.graphqlAuthentication.adapter.userExistsByEmail(
       ctx,
       data.email
     );
@@ -85,23 +88,26 @@ export const mutations = {
     const hashedPassword = await getHashedPassword(data.password);
     const emailConfirmToken = uuidv4();
 
-    const newUser = await ctx.graphqlUser.adapter.createUserBySignup(ctx, {
-      name: data.name,
-      email: data.email,
-      password: hashedPassword,
-      emailConfirmToken,
-      emailConfirmed: false,
-      joinedAt: new Date().toISOString()
-    });
+    const newUser = await ctx.graphqlAuthentication.adapter.createUserBySignup(
+      ctx,
+      {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        emailConfirmToken,
+        emailConfirmed: false,
+        joinedAt: new Date().toISOString()
+      }
+    );
 
-    if (ctx.graphqlUser.mailer) {
-      ctx.graphqlUser.mailer.send({
+    if (ctx.graphqlAuthentication.mailer) {
+      ctx.graphqlAuthentication.mailer.send({
         template: 'signupUser',
         message: {
           to: newUser.email
         },
         locals: {
-          mailAppUrl: ctx.graphqlUser.mailAppUrl,
+          mailAppUrl: ctx.graphqlAuthentication.mailAppUrl,
           emailConfirmToken,
           email: newUser.email
         }
@@ -122,7 +128,10 @@ export const mutations = {
     if (!emailConfirmToken || !email) {
       throw new MissingDataError();
     }
-    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
+    const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
+      ctx,
+      email
+    );
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -130,7 +139,7 @@ export const mutations = {
       throw new InvalidEmailConfirmToken();
     }
 
-    const updatedUser = await ctx.graphqlUser.adapter.updateUserConfirmToken(
+    const updatedUser = await ctx.graphqlAuthentication.adapter.updateUserConfirmToken(
       ctx,
       user.id,
       {
@@ -146,7 +155,10 @@ export const mutations = {
   },
 
   async login(parent: any, { email, password }: User, ctx: Context) {
-    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
+    const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
+      ctx,
+      email
+    );
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -160,7 +172,7 @@ export const mutations = {
     }
 
     if (
-      ctx.graphqlUser.requiredConfirmedEmailForLogin &&
+      ctx.graphqlAuthentication.requiredConfirmedEmailForLogin &&
       !user.emailConfirmed
     ) {
       throw new UserEmailUnconfirmedError();
@@ -172,7 +184,7 @@ export const mutations = {
     }
 
     // Purposefully async, this update doesn't matter that much.
-    ctx.graphqlUser.adapter.updateUserLastLogin(ctx, user.id, {
+    ctx.graphqlAuthentication.adapter.updateUserLastLogin(ctx, user.id, {
       lastLogin: new Date().toISOString()
     });
 
@@ -197,7 +209,7 @@ export const mutations = {
     validatePassword(newPassword);
     const password = await getHashedPassword(newPassword);
 
-    const newUser = await ctx.graphqlUser.adapter.updateUserPassword(
+    const newUser = await ctx.graphqlAuthentication.adapter.updateUserPassword(
       ctx,
       user.id,
       { password }
@@ -225,13 +237,17 @@ export const mutations = {
       throw new InvalidEmailError();
     }
 
-    const existingUser = await ctx.graphqlUser.adapter.findUserByEmail(
+    const existingUser = await ctx.graphqlAuthentication.adapter.findUserByEmail(
       ctx,
       data.email
     );
     if (existingUser) {
-      if (ctx.graphqlUser.hookInviteUserPostCreate) {
-        await ctx.graphqlUser.hookInviteUserPostCreate(data, ctx, existingUser);
+      if (ctx.graphqlAuthentication.hookInviteUserPostCreate) {
+        await ctx.graphqlAuthentication.hookInviteUserPostCreate(
+          data,
+          ctx,
+          existingUser
+        );
       }
       return {
         id: existingUser.id
@@ -243,27 +259,34 @@ export const mutations = {
     // uuid v4 is safe to be used as random token generator.
     const inviteToken = uuidv4();
 
-    const newUser = await ctx.graphqlUser.adapter.createUserByInvite(ctx, {
-      email: data.email,
-      inviteToken,
-      inviteAccepted: false,
-      password: '',
-      name: '',
-      joinedAt: new Date().toISOString()
-    });
+    const newUser = await ctx.graphqlAuthentication.adapter.createUserByInvite(
+      ctx,
+      {
+        email: data.email,
+        inviteToken,
+        inviteAccepted: false,
+        password: '',
+        name: '',
+        joinedAt: new Date().toISOString()
+      }
+    );
 
-    if (ctx.graphqlUser.hookInviteUserPostCreate) {
-      await ctx.graphqlUser.hookInviteUserPostCreate(data, ctx, newUser);
+    if (ctx.graphqlAuthentication.hookInviteUserPostCreate) {
+      await ctx.graphqlAuthentication.hookInviteUserPostCreate(
+        data,
+        ctx,
+        newUser
+      );
     }
 
-    if (ctx.graphqlUser.mailer) {
-      ctx.graphqlUser.mailer.send({
+    if (ctx.graphqlAuthentication.mailer) {
+      ctx.graphqlAuthentication.mailer.send({
         template: 'inviteUser',
         message: {
           to: newUser.email
         },
         locals: {
-          mailAppUrl: ctx.graphqlUser.mailAppUrl,
+          mailAppUrl: ctx.graphqlAuthentication.mailAppUrl,
           inviteToken,
           email: newUser.email
         }
@@ -280,7 +303,10 @@ export const mutations = {
       throw new InvalidEmailError();
     }
 
-    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
+    const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
+      ctx,
+      email
+    );
     if (!user) {
       return { ok: true };
     }
@@ -293,18 +319,22 @@ export const mutations = {
     // Expires in two hours
     const resetExpires = new Date(now.getTime() + 7200000).toISOString();
 
-    await ctx.graphqlUser.adapter.updateUserResetToken(ctx, user.id, {
+    await ctx.graphqlAuthentication.adapter.updateUserResetToken(ctx, user.id, {
       resetToken,
       resetExpires
     });
 
-    if (ctx.graphqlUser.mailer) {
-      ctx.graphqlUser.mailer.send({
+    if (ctx.graphqlAuthentication.mailer) {
+      ctx.graphqlAuthentication.mailer.send({
         template: 'passwordReset',
         message: {
           to: user.email
         },
-        locals: { mailAppUrl: ctx.graphqlUser.mailAppUrl, resetToken, email }
+        locals: {
+          mailAppUrl: ctx.graphqlAuthentication.mailAppUrl,
+          resetToken,
+          email
+        }
       });
     }
 
@@ -321,7 +351,10 @@ export const mutations = {
     if (!resetToken || !password) {
       throw new MissingDataError();
     }
-    const user = await ctx.graphqlUser.adapter.findUserByEmail(ctx, email);
+    const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
+      ctx,
+      email
+    );
     if (!user || !user.resetExpires || user.resetToken !== resetToken) {
       throw new UserNotFoundError();
     }
@@ -332,11 +365,11 @@ export const mutations = {
     validatePassword(password);
     const hashedPassword = await getHashedPassword(password);
 
-    await ctx.graphqlUser.adapter.updateUserResetToken(ctx, user.id, {
+    await ctx.graphqlAuthentication.adapter.updateUserResetToken(ctx, user.id, {
       resetToken: '',
       resetExpires: undefined
     });
-    await ctx.graphqlUser.adapter.updateUserPassword(ctx, user.id, {
+    await ctx.graphqlAuthentication.adapter.updateUserPassword(ctx, user.id, {
       password: hashedPassword
     });
 
@@ -345,14 +378,10 @@ export const mutations = {
     };
   },
 
-  async updateCurrentUser(
-    parent: any,
-    { data }: { data: UserUpdateInput },
-    ctx: Context
-  ) {
+  async updateCurrentUser(parent: any, { data }: { data: any }, ctx: Context) {
     const user = await getUser(ctx);
 
-    await ctx.graphqlUser.adapter.updateUserInfo(ctx, user.id, data);
+    await ctx.graphqlAuthentication.adapter.updateUserInfo(ctx, user.id, data);
 
     return user;
   }

@@ -2,17 +2,13 @@ Pull requests and issues are very welcome!
 
 # Prerequisites
 
-* Node v8+
-* Docker and Docker Compose
-* Prisma CLI (`npm i -g prisma`) - v1.7+
+- Node v8+
 
 # Getting started
 
 To get started, clone this repository and run `yarn` or `npm i`.
 
-After that you can use the example to test your stuff. First you'll have to start Prisma locally with `cd example && docker-compose up -d`. When it is done, you can deploy a service with `prisma deploy` in the `example/` folder.
-
-Now to start the example server you can run `yarn start`.
+After that you can run the tests with `yarn test`.
 
 # Adding a feature or changing behavior
 

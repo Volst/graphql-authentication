@@ -1,12 +1,16 @@
-import { Context as _Context } from '../utils';
-import { Prisma, User } from '../generated/prisma';
-import { GraphqlUserAdapter, ID } from '../Adapter';
+import { Prisma, User } from './generated/prisma';
+import {
+  GraphqlAuthenticationAdapter,
+  ID,
+  Context as _Context
+} from 'graphql-authentication';
 
 interface Context extends _Context {
   db?: Prisma;
 }
 
-export class GraphqlUserPrismaAdapter implements GraphqlUserAdapter {
+export class GraphqlAuthenticationPrismaAdapter
+  implements GraphqlAuthenticationAdapter {
   private db(ctx: Context) {
     if (!ctx.db) {
       throw new Error(

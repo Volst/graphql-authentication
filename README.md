@@ -1,8 +1,11 @@
-# GraphQL User
+# GraphQL Authentication
+
+**Work in progress, do not use yet**
 
 A very opinionated user authentication package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.
 
-By default GraphQL User has an adapter for [Prisma](https://www.prisma.io/), but you can use any data layer (e.g. an ORM) you want with it. Please write a PR with another adapter!
+This package does not access your data layer (e.g. an ORM); for that you need to write a _adapter_ (which is not hard to do).
+If you use Prisma, there is already an adapter for you, **[graphql-authentication-prisma](https://github.com/Volst/graphql-authentication/tree/master/packages/graphql-authentication-prisma)**.
 
 **Features:**
 
@@ -27,75 +30,19 @@ The intention with this package is **to let you write as less user-related code 
 Node v8+ should be used. Install with Yarn or npm:
 
 ```
-yarn add graphql-user email-templates
-npm i graphql-user email-templates
+yarn add graphql-authentication email-templates
+npm i graphql-authentication email-templates
 ```
 
-# Usage with Prisma
-
-## Step 1
-
-In your Prisma `datamodel.graphql` file, add this [User model](./example/datamodel.graphql).
-
-## Step 2
-
-In your `schema.graphql` for your own server, add something like the following (you can also import specific endpoints only):
-
-```graphql
-# import Query.*, Mutation.* from "node_modules/graphql-user/schema.graphql"
-```
-
-## Step 3
-
-In your server we now need to map these types to resolvers and pass in some options. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
+# Usage
 
 ```js
-import { authQueries, authMutations, graphqlUserConfig, GraphqlUserPrismaAdapter } from 'graphql-user';
-import * as Email from 'email-templates';
-
-const resolvers = {
-  Query: {
-    ...authQueries
-  },
-  Mutation: {
-    ...authMutations
-  }
-};
-
-const server = new GraphQLServer({
-  typeDefs: './schema.graphql',
-  resolvers,
-  context: req => ({
-    ...req,
-    db: new Prisma({...}),
-    graphqlUser: graphqlUserConfig({
-      adapter: new GraphqlUserPrismaAdapter(),
-      // Required, used for signing JWT tokens
-      secret: 'wheredidthesodago',
-      // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
-      mailer: new Email(),
-      // Optional, the URL to your frontend which is used in emails
-      mailAppUrl: 'http://example.com',
-    })
-  })
-});
-```
-
-## Step 4
-
-Lastly, if you want to send emails, you should copy the email templates to your own project. Checkout [the example email templates](./example/emails).
-
-# Usage without Prisma
-
-Since Prisma is just an adapter, it is possible to use any ORM or package you want to mutate and query your data.
-
-```js
-class GraphqlUserSequelizeAdapter {
+class GraphqlAuthenticationSequelizeAdapter {
   //
 }
 
-graphqlUser: GraphqlUserSequelizeAdapter({
-  adapter: new GraphqlUser()
+graphqlAuthentication: GraphqlAuthenticationSequelizeAdapter({
+  adapter: new GraphqlAuthentication()
 });
 ```
 
@@ -127,7 +74,7 @@ On some of your endpoints you might want to require that the user is logged in, 
 
 ```js
 import { shield, rule } from 'graphql-shield';
-import { isAuthResolver } from 'graphql-user';
+import { isAuthResolver } from 'graphql-authentication';
 
 const isAuth = rule()(isAuthResolver);
 
@@ -151,7 +98,7 @@ Take a look at the [graphql-shield README](https://github.com/maticzav/graphql-s
 Get the current user in a resolver (performs a request to your data layer):
 
 ```js
-import { getUser } from 'graphql-user';
+import { getUser } from 'graphql-authentication';
 
 const Mutation = {
   async publish(parent, data, ctx) {
@@ -164,7 +111,7 @@ const Mutation = {
 Get only the current user ID in a resolver (without request to your data layer):
 
 ```js
-import { getUserId } from 'graphql-user';
+import { getUserId } from 'graphql-authentication';
 
 const Mutation = {
   async publish(parent, data, ctx) {
@@ -197,7 +144,7 @@ And then save the token to `localStorage`. Now you need to send the token with e
 If you wish to expose some fields on the User type that are not exposed in our [schema.graphql](./schema.graphql), you can provide your own User. In your own `schema.graphql`, do something like the following:
 
 ```graphql
-# import Mutation.* from "node_modules/graphql-user/schema.graphql"
+# import Mutation.* from "node_modules/graphql-authentication/schema.graphql"
 
 type Query {
   currentUser: User
@@ -227,7 +174,7 @@ If for example you do not want the `joinedAt` field to be exposed, you can simpl
 By default everyone can signup for your project. But what if you want to only allow invite by signup? In this case you need to leave out the `Mutation.signup` import. Example:
 
 ```graphql
-# import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/graphql-user/schema.graphql"
+# import Mutation.signupByInvite, Mutation.inviteUser, Mutation.login, Mutation.changePassword, Mutation.updateCurrentUser, Mutation.triggerPasswordReset, Mutation.passwordReset, from "node_modules/graphql-authentication/schema.graphql"
 ```
 
 ## Making email confirmation required before login
@@ -237,7 +184,7 @@ After a user signups via the `signup` endpoint, they will get an email with a li
 However, you might want to block the user from logging in at all when their email is not yet confirmed. In this case you need to pass this option:
 
 ```js
-graphqlUser: graphqlUserConfig({
+graphqlAuthentication: graphqlAuthenticationConfig({
   requiredConfirmedEmailForLogin: true
 });
 ```

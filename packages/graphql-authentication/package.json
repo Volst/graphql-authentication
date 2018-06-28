@@ -1,0 +1,83 @@
+{
+  "name": "graphql-authentication",
+  "version": "0.4.1",
+  "description": "Makes it super easy to do do boring authentication stuff with GraphQL (login, password reset, ...)",
+  "author": "kees@volst.nl",
+  "repository": "Volst/graphql-authentication",
+  "keywords": [
+    "graphql",
+    "user",
+    "authentication",
+    "login"
+  ],
+  "license": "ISC",
+  "private": false,
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "engines": {
+    "node": ">=8.0"
+  },
+  "files": [
+    "dist",
+    "schema.graphql"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "lint": "tslint -p .",
+    "prepublishOnly": "npm run -s build",
+    "precommit": "pretty-quick --staged",
+    "start": "nodemon -e ts,graphql -x ts-node example/index.ts",
+    "test": "jest --watch",
+    "test-coverage": "jest --coverage",
+    "ci": "npm run -s lint && npm run -s build && npm run -s test-coverage && codecov"
+  },
+  "devDependencies": {
+    "@types/email-templates": "^3.5.0",
+    "@types/jest": "^23.1.0",
+    "@volst/tslint-config": "^0.2.1",
+    "codecov": "^3.0.2",
+    "email-templates": "^4.0.1",
+    "graphql-cli": "^2.15.13",
+    "graphql-request": "^1.6.0",
+    "graphql-yoga": "1.14.10",
+    "husky": "^0.14.3",
+    "jest": "^23.1.0",
+    "nodemon": "^1.17.3",
+    "prettier": "^1.12.1",
+    "pretty-quick": "^1.4.1",
+    "pug": "^2.0.3",
+    "ts-jest": "^22.4.6",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.1",
+    "@types/jsonwebtoken": "^7.2.6",
+    "@types/uuid": "^3.4.3",
+    "@types/validator": "^9.4.1",
+    "apollo-errors": "^1.9.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.2.1",
+    "uuid": "^3.2.1",
+    "validator": "^10.2.0"
+  },
+  "peerDependencies": {
+    "email-templates": "^3.6 || ^4"
+  },
+  "jest": {
+    "roots": [
+      "./src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ]
+  }
+}

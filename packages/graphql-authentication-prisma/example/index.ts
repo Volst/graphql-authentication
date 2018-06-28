@@ -5,9 +5,9 @@ import { Prisma } from '../src/generated/prisma';
 import {
   authQueries,
   authMutations,
-  graphqlUserConfig,
-  GraphqlUserPrismaAdapter
-} from '../src';
+  graphqlAuthenticationConfig
+} from 'graphql-authentication';
+import { GraphqlAuthenticationPrismaAdapter } from '../src';
 
 const resolvers = {
   Query: {
@@ -39,8 +39,8 @@ const server = new GraphQLServer({
       endpoint: 'http://localhost:4466',
       debug: true
     }),
-    graphqlUser: graphqlUserConfig({
-      adapter: new GraphqlUserPrismaAdapter(),
+    graphqlUser: graphqlAuthenticationConfig({
+      adapter: new GraphqlAuthenticationPrismaAdapter(),
       secret: 'wherearemyshoes',
       mailer,
       mailAppUrl: 'http://example.com',

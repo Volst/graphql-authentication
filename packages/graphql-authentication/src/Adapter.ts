@@ -5,14 +5,14 @@ export type ID = string;
 
 export interface User {
   id: ID;
-  email: String;
-  password: String;
-  name: String;
-  inviteToken?: String;
+  email: string;
+  password: string;
+  name: string;
+  inviteToken?: string;
   inviteAccepted: Boolean;
   emailConfirmed: Boolean;
-  emailConfirmToken?: String;
-  resetToken?: String;
+  emailConfirmToken?: string;
+  resetToken?: string;
   resetExpires?: DateTime;
   deletedAt?: DateTime;
   lastLogin?: DateTime;
@@ -20,7 +20,7 @@ export interface User {
   isSuper: Boolean;
 }
 
-export interface GraphqlUserAdapter {
+export interface GraphqlAuthenticationAdapter {
   findUserById(ctx: Context, id: ID, info?: any): Promise<User | null>;
   findUserByEmail(
     ctx: Context,

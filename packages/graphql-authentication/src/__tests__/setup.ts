@@ -1,6 +1,6 @@
 import { GraphQLServer } from 'graphql-yoga';
 import { GraphQLClient } from 'graphql-request';
-import { graphqlUserConfig, authQueries, authMutations } from '..';
+import { graphqlAuthenticationConfig, authQueries, authMutations } from '..';
 
 const KEES_USER = {
   id: '2',
@@ -37,7 +37,7 @@ export async function startServer() {
     },
     context: req => ({
       ...req,
-      graphqlUser: graphqlUserConfig({
+      graphqlAuthentication: graphqlAuthenticationConfig({
         secret: 'wherearemyshoes',
         adapter: new FakeAdapter() as any
       })

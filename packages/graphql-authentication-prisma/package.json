@@ -1,6 +1,6 @@
 {
   "name": "graphql-authentication-prisma",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Prisma adapter for graphql-authentication",
   "author": "kees@volst.nl",
   "repository": "Volst/graphql-authentication",
@@ -36,7 +36,7 @@
     "@volst/tslint-config": "^0.2.1",
     "codecov": "^3.0.2",
     "email-templates": "^4.0.1",
-    "graphql-authentication": "^0.5.0",
+    "graphql-authentication": "^0.5.1",
     "graphql-cli": "^2.15.13",
     "graphql-request": "^1.6.0",
     "graphql-yoga": "1.14.10",

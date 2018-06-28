@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "declaration": true,
+    "lib": ["esnext"],
+    "strict": true,
+    // Disabled because this doesn't work correctly with "declaration": true
+    "noUnusedLocals": false,
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

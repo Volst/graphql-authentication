@@ -7,6 +7,7 @@
     "strict": true,
     // Disabled because this doesn't work correctly with "declaration": true
     "noUnusedLocals": false,
+    "strictFunctionTypes": false,
     "noImplicitAny": false,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true

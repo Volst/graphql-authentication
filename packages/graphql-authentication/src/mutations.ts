@@ -19,16 +19,11 @@ import {
   UserEmailUnconfirmedError
 } from './errors';
 import {
-  SignupByInviteMutationArgs,
-  SignupMutationArgs,
-  ConfirmEmailMutationArgs,
-  LoginMutationArgs,
-  ChangePasswordMutationArgs,
-  InviteUserMutationArgs,
-  TriggerPasswordResetMutationArgs,
-  PasswordResetMutationArgs,
-  UpdateCurrentUserMutationArgs
-} from './schema';
+  SignupByInviteInput,
+  SignupInput,
+  InviteUserInput,
+  UserUpdateInput
+} from './binding';
 
 function generateToken(user: User, ctx: Context) {
   return jwt.sign({ userId: user.id }, ctx.graphqlAuthentication.secret);
@@ -47,7 +42,7 @@ function getHashedPassword(value: string) {
 export const mutations = {
   async signupByInvite(
     parent: any,
-    { data }: SignupByInviteMutationArgs,
+    { data }: { data: SignupByInviteInput },
     ctx: Context
   ) {
     // Important first check, because i.e. the `inviteToken` could be an empty string
@@ -87,7 +82,7 @@ export const mutations = {
     };
   },
 
-  async signup(parent: any, { data }: SignupMutationArgs, ctx: Context) {
+  async signup(parent: any, { data }: { data: SignupInput }, ctx: Context) {
     if (!data.email) {
       throw new MissingDataError();
     }
@@ -137,7 +132,7 @@ export const mutations = {
 
   async confirmEmail(
     parent: any,
-    { emailConfirmToken, email }: ConfirmEmailMutationArgs,
+    { emailConfirmToken, email }: { emailConfirmToken: string; email: string },
     ctx: Context
   ) {
     if (!emailConfirmToken || !email) {
@@ -171,7 +166,7 @@ export const mutations = {
 
   async login(
     parent: any,
-    { email, password }: LoginMutationArgs,
+    { email, password }: { email: string; password: string },
     ctx: Context
   ) {
     const user = await ctx.graphqlAuthentication.adapter.findUserByEmail(
@@ -215,7 +210,7 @@ export const mutations = {
 
   async changePassword(
     parent: any,
-    { oldPassword, newPassword }: ChangePasswordMutationArgs,
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
     ctx: Context
   ) {
     const user = await getUser(ctx);
@@ -241,7 +236,7 @@ export const mutations = {
 
   async inviteUser(
     parent: any,
-    { data }: InviteUserMutationArgs,
+    { data }: { data: InviteUserInput },
     ctx: Context
   ) {
     await getUser(ctx);
@@ -313,7 +308,7 @@ export const mutations = {
 
   async triggerPasswordReset(
     parent: any,
-    { email }: TriggerPasswordResetMutationArgs,
+    { email }: { email: string },
     ctx: Context
   ) {
     if (!validator.isEmail(email)) {
@@ -362,7 +357,11 @@ export const mutations = {
 
   async passwordReset(
     parent: any,
-    { email, resetToken, password }: PasswordResetMutationArgs,
+    {
+      email,
+      resetToken,
+      password
+    }: { email: string; resetToken: string; password: string },
     ctx: Context
   ) {
     if (!resetToken || !password) {
@@ -397,7 +396,7 @@ export const mutations = {
 
   async updateCurrentUser(
     parent: any,
-    { data }: UpdateCurrentUserMutationArgs,
+    { data }: { data: UserUpdateInput },
     ctx: Context
   ) {
     const user = await getUser(ctx);

@@ -1,18 +1,49 @@
 import { GraphQLServer } from 'graphql-yoga';
 import { GraphQLClient } from 'graphql-request';
 import { graphqlAuthenticationConfig, authQueries, authMutations } from '..';
+import { GraphqlAuthenticationAdapter, User, ID } from '..';
 
-const KEES_USER = {
-  id: '2',
-  name: 'Kees',
-  email: 'kees@volst.nl'
-};
-
-export class FakeAdapter {
-  findUserById(ctx: any, id: any, info?: any) {
-    if (id === '2') {
-      return KEES_USER;
+export class FakeAdapter implements GraphqlAuthenticationAdapter {
+  users: User[] = [
+    {
+      id: '2',
+      name: 'Kees',
+      password: '$2a$10$3dcRen7qMwJmzUzgj7cjUukHYlPTTCAjFhfF00.5WAFhhClTp6H4y', // testtest2
+      email: 'kees@volst.nl',
+      inviteAccepted: true,
+      emailConfirmed: true,
+      joinedAt: '2018-06-29T14:26:57+00:00',
+      isSuper: false,
+      lastLogin: ''
     }
+  ];
+
+  // If you'd use a database you wouldn't need this
+  _generateId() {
+    const lastUser = this.users[this.users.length - 1];
+    return String(parseInt(lastUser.id) + 1);
+  }
+  findUserById(ctx: object, id: ID, info?: any) {
+    return Promise.resolve(this.users.find(user => user.id === id) || null);
+  }
+  findUserByEmail(ctx: any, email: string) {
+    return Promise.resolve(
+      this.users.find(user => user.email === email) || null
+    );
+  }
+  userExistsByEmail(ctx: any, email: string) {
+    return Promise.resolve(this.users.some(user => user.email === email));
+  }
+  createUserBySignup(ctx: any, data: any) {
+    const lastUser = this.users[this.users.length - 1];
+    const user = { id: this._generateId(), ...data };
+    this.users.push(user);
+    return user;
+  }
+  async updateUserLastLogin(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    Object.assign(user, data); // iel
+    return Promise.resolve(user);
   }
 }
 

@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
-import * as uuidv4 from 'uuid/v4';
+import uuidv4 from 'uuid/v4';
 import { getUser, Context } from './utils';
 import { User } from './Adapter';
 import {

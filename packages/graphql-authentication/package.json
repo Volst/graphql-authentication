@@ -28,7 +28,8 @@
     "start": "nodemon -e ts,graphql -x ts-node example/index.ts",
     "test": "jest --watch",
     "test-coverage": "jest --coverage",
-    "ci": "npm run -s lint && npm run -s build && npm run -s test-coverage && codecov"
+    "ci": "npm run -s lint && npm run -s build && npm run -s test-coverage && codecov",
+    "graphql-types": "gql-gen --template graphql-codegen-typescript-template --out=src/schema.ts --schema http://localhost:4000"
   },
   "devDependencies": {
     "@types/email-templates": "^3.5.0",
@@ -36,7 +37,8 @@
     "@volst/tslint-config": "^0.2.1",
     "codecov": "^3.0.2",
     "email-templates": "^4.0.1",
-    "graphql-cli": "^2.15.13",
+    "graphql-code-generator": "^0.9.4",
+    "graphql-codegen-typescript-template": "^0.9.4",
     "graphql-request": "^1.6.0",
     "graphql-yoga": "1.14.10",
     "jest": "^23.1.0",

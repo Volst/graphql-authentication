@@ -215,7 +215,7 @@ export const mutations = {
   ) {
     const user = await getUser(ctx);
 
-    const valid = await bcrypt.compare(user.password, oldPassword);
+    const valid = await bcrypt.compare(oldPassword, user.password);
     if (!valid) {
       throw new InvalidOldPasswordError();
     }

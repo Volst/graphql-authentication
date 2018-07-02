@@ -45,6 +45,21 @@ export class FakeAdapter implements GraphqlAuthenticationAdapter {
     Object.assign(user, data); // iel
     return Promise.resolve(user);
   }
+  async updateUserInfo(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    Object.assign(user, data); // iel
+    return Promise.resolve(user);
+  }
+  async updateUserPassword(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    user!.password = data.password;
+    return Promise.resolve(user);
+  }
+  async updateUserResetToken(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    Object.assign(user, data); // iel
+    return Promise.resolve(user);
+  }
 }
 
 // In nodejs run `require('jsonwebtoken').sign({ userId: '2' }, 'wherearemyshoes')`
@@ -56,6 +71,7 @@ export async function startServer() {
   if (http) {
     await http.close();
   }
+  const adapter = new FakeAdapter() as any;
   const server = new GraphQLServer({
     typeDefs: './schema.graphql',
     resolvers: {
@@ -70,7 +86,7 @@ export async function startServer() {
       ...req,
       graphqlAuthentication: graphqlAuthenticationConfig({
         secret: 'wherearemyshoes',
-        adapter: new FakeAdapter() as any
+        adapter
       })
     })
   });

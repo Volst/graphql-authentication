@@ -40,6 +40,12 @@ export class FakeAdapter implements GraphqlAuthenticationAdapter {
     this.users.push(user);
     return user;
   }
+  createUserByInvite(ctx: any, data: any) {
+    const lastUser = this.users[this.users.length - 1];
+    const user = { id: this._generateId(), ...data };
+    this.users.push(user);
+    return user;
+  }
   async updateUserLastLogin(ctx: any, userId: string, data: any) {
     const user = await this.findUserById(ctx, userId);
     Object.assign(user, data); // iel
@@ -56,6 +62,16 @@ export class FakeAdapter implements GraphqlAuthenticationAdapter {
     return Promise.resolve(user);
   }
   async updateUserResetToken(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    Object.assign(user, data); // iel
+    return Promise.resolve(user);
+  }
+  async updateUserCompleteInvite(ctx: any, userId: string, data: any) {
+    const user = await this.findUserById(ctx, userId);
+    Object.assign(user, data); // iel
+    return Promise.resolve(user);
+  }
+  async updateUserConfirmToken(ctx: any, userId: string, data: any) {
     const user = await this.findUserById(ctx, userId);
     Object.assign(user, data); // iel
     return Promise.resolve(user);
@@ -97,6 +113,12 @@ export async function startServer() {
   const { port } = http.address();
   return `http://localhost:${port}/`;
 }
+
+afterAll(async () => {
+  if (http) {
+    await http.close();
+  }
+});
 
 export const clientWithAuth = uri =>
   new GraphQLClient(uri, {

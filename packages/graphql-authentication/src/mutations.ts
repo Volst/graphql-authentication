@@ -106,6 +106,7 @@ export const mutations = {
         password: hashedPassword,
         emailConfirmToken,
         emailConfirmed: false,
+        inviteAccepted: true,
         joinedAt: new Date().toISOString()
       }
     );

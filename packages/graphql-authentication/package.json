@@ -71,6 +71,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "setupTestFrameworkScriptFile": "<rootDir>/src/__tests__/setup.ts",
     "moduleFileExtensions": [
       "ts",
       "js",

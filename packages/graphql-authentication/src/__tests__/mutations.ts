@@ -24,8 +24,8 @@ test('signup - a new user', async () => {
 });
 
 test('signup - with existent user', async () => {
-  const req = client(await startServer());
   expect.assertions(1);
+  const req = client(await startServer());
 
   try {
     await req.request(`mutation {
@@ -39,8 +39,8 @@ test('signup - with existent user', async () => {
 });
 
 test('signup - with weak password', async () => {
-  const req = client(await startServer());
   expect.assertions(1);
+  const req = client(await startServer());
 
   try {
     await req.request(`mutation {
@@ -92,8 +92,8 @@ test('login - non-existent user', async () => {
 });
 
 test('login - wrong password', async () => {
-  const req = client(await startServer());
   expect.assertions(1);
+  const req = client(await startServer());
 
   try {
     await req.request(`mutation {
@@ -123,8 +123,8 @@ test('update current user data - correct', async () => {
 });
 
 test('update current user data - wrong old passwd', async () => {
-  const req = clientWithAuth(await startServer());
   expect.assertions(1);
+  const req = clientWithAuth(await startServer());
 
   try {
     await req.request(`mutation {
@@ -165,8 +165,8 @@ test('update user password', async () => {
 });
 
 test('trigger password reset - correct', async () => {
-  const req = clientWithAuth(await startServer());
   expect.assertions(6);
+  const req = clientWithAuth(await startServer());
   const spy = jest.spyOn(FakeAdapter.prototype, 'updateUserResetToken');
 
   const result = await req.request(`mutation {
@@ -216,6 +216,121 @@ test('trigger password reset - correct', async () => {
     }`);
   } catch (e) {
     expect(String(e)).toMatch(/No user found/);
+  }
+
+  spy.mockRestore();
+});
+
+test('invite user - correct', async () => {
+  expect.assertions(6);
+  const req = clientWithAuth(await startServer());
+  const spy = jest.spyOn(FakeAdapter.prototype, 'createUserByInvite');
+
+  const result = await req.request(`mutation {
+    inviteUser(data: {email: "roger@volst.nl"}) {
+      id
+    }
+  }`);
+
+  expect(spy).toHaveBeenCalled();
+
+  expect((result as any).inviteUser).toEqual({
+    id: '3'
+  });
+
+  const { inviteToken } = await spy.mock.results[0].value;
+  // Verify the resetToken is a UUID
+  expect(inviteToken.length).toBe(36);
+
+  const SIGNUP_INVITE = `mutation {
+    signupByInvite(data:{name: "Roger", email: "roger@volst.nl", password: "testtest4", inviteToken: "${inviteToken}"}) {
+      user {
+        id
+      }
+    }
+  }`;
+
+  const result2 = await req.request(SIGNUP_INVITE);
+
+  expect((result2 as any).signupByInvite.user).toEqual({
+    id: '3'
+  });
+
+  const result3 = await req.request(`mutation {
+    login(email: "roger@volst.nl", password: "testtest4") {
+      user {
+        id
+      }
+    }
+  }`);
+
+  expect((result3 as any).login.user).toEqual({
+    id: '3'
+  });
+
+  // Now verify that the inviteToken is now invalid
+  try {
+    await req.request(SIGNUP_INVITE);
+  } catch (e) {
+    expect(String(e)).toMatch(/inviteToken is invalid/);
+  }
+
+  spy.mockRestore();
+});
+
+test('confirm email - correct', async () => {
+  expect.assertions(6);
+  const req = clientWithAuth(await startServer());
+  const spy = jest.spyOn(FakeAdapter.prototype, 'createUserBySignup');
+
+  const result = await req.request(`mutation {
+    signup(data:{name: "Roger", email: "roger@volst.nl", password: "testtest4"}) {
+      user {
+        id
+      }
+    }
+  }`);
+
+  expect(spy).toHaveBeenCalled();
+
+  expect((result as any).signup.user).toEqual({
+    id: '3'
+  });
+
+  const { emailConfirmToken } = await spy.mock.results[0].value;
+  // Verify the emailConfirmToken is a UUID
+  expect(emailConfirmToken.length).toBe(36);
+
+  const CONFIRM_EMAIL = `mutation {
+    confirmEmail(email: "roger@volst.nl", emailConfirmToken: "${emailConfirmToken}") {
+      user {
+        id
+      }
+    }
+  }`;
+  const result2 = await req.request(CONFIRM_EMAIL);
+
+  expect((result2 as any).confirmEmail.user).toEqual({
+    id: '3'
+  });
+
+  const result3 = await req.request(`mutation {
+    login(email: "roger@volst.nl", password: "testtest4") {
+      user {
+        id
+      }
+    }
+  }`);
+
+  expect((result3 as any).login.user).toEqual({
+    id: '3'
+  });
+
+  // Now verify that the emailConfirmToken is now invalid
+  try {
+    await req.request(CONFIRM_EMAIL);
+  } catch (e) {
+    expect(String(e)).toMatch(/emailConfirmToken is invalid/);
   }
 
   spy.mockRestore();

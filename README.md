@@ -1,10 +1,10 @@
 # GraphQL Authentication
 
-**Work in progress, do not use yet**
+_Previously called Prisma Auth_
 
 A very opinionated user authentication package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.
 
-This package does not access your data layer (e.g. an ORM); for that you need to write a _adapter_ (which is not hard to do).
+This package provides **a GraphQL schema and GraphQL resolvers** for everything you need related to authentication. It does not access your data layer (e.g. an ORM); for that you need to write an _adapter_ (which is not hard to do).
 If you use Prisma, there is already an adapter for you, **[graphql-authentication-prisma](https://github.com/Volst/graphql-authentication/tree/master/packages/graphql-authentication-prisma)**.
 
 **Features:**
@@ -19,7 +19,7 @@ If you use Prisma, there is already an adapter for you, **[graphql-authenticatio
 
 # Motivation
 
-Adding user authentication seems simple; there are lots of examples on how to write a "login" and a "signup" resolver. You implement it in your own project and continue working. After a while you'll have users forgetting their password so you need to build something for that. Then you want to be able to invite users, ... you get the idea. After a while you have a lot of boilerplate code related to user authentication.
+Adding user authentication seems simple; there are lots of examples on how to write a "login" and a "signup" resolver. You implement it in your own project and continue working. After a while you'll have users forgetting their password so you need to build something for that. Then you want to be able to invite users, ... you get the idea. In the end you have a lot of boilerplate code related to user authentication.
 
 The intention with this package is **to let you write as less user-related code as possible**, while being flexible enough to support different use cases like open sign up, invitation-only signup, extra fields on the User model etc.
 
@@ -36,15 +36,79 @@ npm i graphql-authentication email-templates
 
 # Usage
 
-```js
-class GraphqlAuthenticationSequelizeAdapter {
-  //
-}
+## Using the schema
 
-graphqlAuthentication: GraphqlAuthenticationSequelizeAdapter({
-  adapter: new GraphqlAuthentication()
+In your own GraphQL schema you can import all the types this package provides:
+
+```graphql
+# import Query.*, Mutation.* from "node_modules/graphql-authentication/schema.graphql"
+```
+
+> This only works if you use [graphql-import](https://github.com/prismagraphql/graphql-import). If you are using graphql-yoga this will work out of the box!
+
+Alternatively you can only import the types you want to expose, for example:
+
+```graphql
+# import Query.currentUser, Mutation.signupByInvite, Mutation.inviteUser, Mutation.login from "node_modules/graphql-authentication/schema.graphql"
+```
+
+## Configuration
+
+We need to add some configuration to get this package to work. The following example uses [graphql-yoga](https://github.com/graphcool/graphql-yoga/), but it should also work with Apollo Server.
+
+```js
+import { graphqlAuthenticationConfig } from 'graphql-authentication';
+import * as Email from 'email-templates';
+
+const server = new GraphQLServer({
+  typeDefs: './schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    graphqlAuthentication: graphqlAuthenticationConfig({
+      // Required, see for more info the "Writing an adapter" section on this page
+      adapter: new GraphqlAuthenticationSequelizeAdapter(),
+      // Required, used for signing JWT tokens
+      secret: 'wheredidthesodago',
+      // Optional, for sending emails with email-templates (https://www.npmjs.com/package/email-templates)
+      mailer: new Email(),
+      // Optional, the URL to your frontend which is used in emails
+      mailAppUrl: 'http://example.com'
+    })
+  })
 });
 ```
+
+## Adding the resolvers
+
+You need to expose the resolvers this package provides for you to your own GraphQL server. For example:
+
+```js
+import { authQueries, authMutations } from 'graphql-authentication';
+
+const resolvers = {
+  Query: {
+    ...authQueries
+  },
+  Mutation: {
+    ...authMutations
+  }
+};
+```
+
+## Emails
+
+Lastly, this project can optionally send emails for you (e.g. the password reset link). [`email-templates`](https://www.npmjs.com/package/email-templates) is used for this. Be sure to configure it in the options:
+
+```js
+import * as Email from 'email-templates';
+
+graphqlAuthentication: graphqlAuthenticationConfig({
+  mailer: new Email()
+});
+```
+
+However, this package does not provide the email templates itself for you, since these differ too much. You can [**copy the email templates**](./example/emails) from our example to get started.
 
 # Documentation
 
@@ -188,3 +252,15 @@ graphqlAuthentication: graphqlAuthenticationConfig({
   requiredConfirmedEmailForLogin: true
 });
 ```
+
+## Writing an adapter
+
+An adapter sits between GraphQL Authentication and your own ORM/database thingy. If you are using Prisma, there is already [graphql-authentication-prisma](https://github.com/Volst/graphql-authentication/tree/master/packages/graphql-authentication-prisma) for you.
+
+However, if you don't use Prisma, that's totally fine! Writing an adapter shouldn't take very long.
+
+In [the tests](https://github.com/Volst/prisma-auth/blob/refactor/packages/graphql-authentication/src/__tests__/setup.ts) there is a good example of an adapter.
+
+You can keep the adapter class directly in your own project, make a separate npm package for it or write a PR to add it here (please do)!
+
+> TODO: this section needs to be improved

@@ -1,6 +1,6 @@
 {
   "name": "graphql-authentication",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Makes it super easy to do do boring authentication stuff with GraphQL (login, password reset, ...)",
   "author": "kees@volst.nl",
   "repository": "Volst/graphql-authentication",

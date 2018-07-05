@@ -1,7 +1,13 @@
 import { GraphQLServer } from 'graphql-yoga';
 import { GraphQLClient } from 'graphql-request';
-import { graphqlAuthenticationConfig, authQueries, authMutations } from '..';
-import { GraphqlAuthenticationAdapter, User, ID } from '..';
+import {
+  graphqlAuthenticationConfig,
+  authQueries,
+  authMutations,
+  GraphqlAuthenticationAdapter,
+  User,
+  ID
+} from '..';
 
 export class FakeAdapter implements GraphqlAuthenticationAdapter {
   users: User[] = [
@@ -35,16 +41,14 @@ export class FakeAdapter implements GraphqlAuthenticationAdapter {
     return Promise.resolve(this.users.some(user => user.email === email));
   }
   createUserBySignup(ctx: any, data: any) {
-    const lastUser = this.users[this.users.length - 1];
     const user = { id: this._generateId(), ...data };
     this.users.push(user);
-    return user;
+    return Promise.resolve(user);
   }
   createUserByInvite(ctx: any, data: any) {
-    const lastUser = this.users[this.users.length - 1];
     const user = { id: this._generateId(), ...data };
     this.users.push(user);
-    return user;
+    return Promise.resolve(user);
   }
   async updateUserLastLogin(ctx: any, userId: string, data: any) {
     const user = await this.findUserById(ctx, userId);

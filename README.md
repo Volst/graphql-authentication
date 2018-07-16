@@ -259,7 +259,7 @@ An adapter sits between GraphQL Authentication and your own ORM/database thingy.
 
 However, if you don't use Prisma, that's totally fine! Writing an adapter shouldn't take very long.
 
-In [the tests](https://github.com/Volst/graphql-authentication/blob/refactor/packages/graphql-authentication/src/__tests__/setup.ts) there is a good example of an adapter.
+In [the tests](https://github.com/Volst/graphql-authentication/blob/refactor/packages/graphql-authentication/src/__tests__/setup.ts) there is a good example of an adapter. Also, the [`examples/`](https://github.com/Volst/graphql-authentication/tree/master/examples) folder contains more some custom adapters, like one for Sequelize.
 
 You can keep the adapter class directly in your own project, make a separate npm package for it or write a PR to add it here (please do)!
 

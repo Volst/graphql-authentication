@@ -1,13 +1,13 @@
 import { GraphQLServer } from 'graphql-yoga';
 import * as path from 'path';
 import * as Email from 'email-templates';
-import { Prisma } from '../src/generated/prisma';
+import { Prisma } from './generated/prisma';
 import {
   authQueries,
   authMutations,
   graphqlAuthenticationConfig
 } from 'graphql-authentication';
-import { GraphqlAuthenticationPrismaAdapter } from '../src';
+import { GraphqlAuthenticationPrismaAdapter } from 'graphql-authentication-prisma';
 
 const resolvers = {
   Query: {
@@ -31,7 +31,7 @@ const mailer = new Email({
 });
 
 const server = new GraphQLServer({
-  typeDefs: './example/schema.graphql',
+  typeDefs: './schema.graphql',
   resolvers,
   context: req => ({
     ...req,
@@ -43,8 +43,7 @@ const server = new GraphQLServer({
       adapter: new GraphqlAuthenticationPrismaAdapter(),
       secret: 'wherearemyshoes',
       mailer,
-      mailAppUrl: 'http://example.com',
-      requiredConfirmedEmailForLogin: true
+      mailAppUrl: 'http://example.com'
     })
   })
 });

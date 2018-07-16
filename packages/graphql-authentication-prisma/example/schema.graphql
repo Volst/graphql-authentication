@@ -1,9 +1,0 @@
-# import Query.*, Mutation.* from "../../../node_modules/graphql-authentication/schema.graphql"
-
-type Query {
-  timeline: [Post!]!
-}
-
-type Post {
-  name: String!
-}

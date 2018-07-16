@@ -11,4 +11,4 @@ npm i
 npm start
 ```
 
-Go to http://localhost:4000 in your browser and start executing some queries and mutations!
+Go to http://localhost:4000 in your browser and start running some queries and mutations!

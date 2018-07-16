@@ -1,0 +1,19 @@
+{
+  "name": "graphql-authentication-with-prisma-example",
+  "private": true,
+  "version": "1.0.0",
+  "license": "ISC",
+  "dependencies": {
+    "email-templates": "^4.0.1",
+    "graphql-authentication": "^0.5.3",
+    "graphql-authentication-prisma": "^0.1.3",
+    "graphql-cli": "^2.16.4",
+    "graphql-yoga": "^1.14.12",
+    "prisma": "^1.11.1",
+    "prisma-binding": "^2.1.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "prisma": "PRISMA_MANAGEMENT_API_SECRET=mymanagementsecret123 prisma"
+  }
+}

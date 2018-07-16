@@ -14,13 +14,15 @@ export interface IGraphqlAuthenticationConfig {
     user: User
   ) => Promise<any>;
   adapter: GraphqlAuthenticationAdapter;
+  validatePassword?: (value: string) => boolean;
 }
 
 export function graphqlAuthenticationConfig(
   options: IGraphqlAuthenticationConfig
 ) {
   const defaults = {
-    requiredConfirmedEmailForLogin: false
+    requiredConfirmedEmailForLogin: false,
+    validatePassword: value => value.length >= 8
   };
   if (!options.adapter) {
     throw new Error(

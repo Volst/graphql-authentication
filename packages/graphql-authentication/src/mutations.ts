@@ -29,8 +29,8 @@ function generateToken(user: User, ctx: Context) {
   return jwt.sign({ userId: user.id }, ctx.graphqlAuthentication.secret);
 }
 
-function validatePassword(value: string) {
-  if (value.length <= 8) {
+function validatePassword(ctx: Context, value: string) {
+  if (!ctx.graphqlAuthentication.validatePassword!(value)) {
     throw new PasswordTooShortError();
   }
 }
@@ -62,7 +62,7 @@ export const mutations = {
       throw new InvalidInviteTokenError();
     }
 
-    validatePassword(data.password);
+    validatePassword(ctx, data.password);
     const hashedPassword = await getHashedPassword(data.password);
 
     const updatedUser = await ctx.graphqlAuthentication.adapter.updateUserCompleteInvite(
@@ -94,7 +94,7 @@ export const mutations = {
       throw new UserEmailExistsError();
     }
 
-    validatePassword(data.password);
+    validatePassword(ctx, data.password);
     const hashedPassword = await getHashedPassword(data.password);
     const emailConfirmToken = uuid();
 
@@ -221,7 +221,7 @@ export const mutations = {
       throw new InvalidOldPasswordError();
     }
 
-    validatePassword(newPassword);
+    validatePassword(ctx, newPassword);
     const password = await getHashedPassword(newPassword);
 
     const newUser = await ctx.graphqlAuthentication.adapter.updateUserPassword(
@@ -379,7 +379,7 @@ export const mutations = {
       throw new ResetTokenExpiredError();
     }
 
-    validatePassword(password);
+    validatePassword(ctx, password);
     const hashedPassword = await getHashedPassword(password);
 
     await ctx.graphqlAuthentication.adapter.updateUserResetToken(ctx, user.id, {

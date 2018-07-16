@@ -253,6 +253,16 @@ graphqlAuthentication: graphqlAuthenticationConfig({
 });
 ```
 
+## Custom password validation
+
+The users password is validated with `password.length >= 8` by default. Maybe you want stricter or less stricter validation on this. You will need to pass this option to change it:
+
+```js
+graphqlAuthentication: graphqlAuthenticationConfig({
+  validatePassword: value => value.length >= 10
+});
+```
+
 ## Writing an adapter
 
 An adapter sits between GraphQL Authentication and your own ORM/database thingy. If you are using Prisma, there is already [graphql-authentication-prisma](https://github.com/Volst/graphql-authentication/tree/master/packages/graphql-authentication-prisma) for you.

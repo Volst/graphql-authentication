@@ -29,10 +29,10 @@ test('signup - with existent user', async () => {
 
   try {
     await req.request(`mutation {
-    signup(data: {name: "Kees", email: "kees@volst.nl", password: "testtest2"}) {
-      token
-    }
-  }`);
+      signup(data: {name: "Kees", email: "kees@volst.nl", password: "testtest2"}) {
+        token
+      }
+    }`);
   } catch (e) {
     expect(String(e)).toMatch(/User already exists with this email/);
   }
@@ -44,10 +44,33 @@ test('signup - with weak password', async () => {
 
   try {
     await req.request(`mutation {
-    signup(data: {name: "Roger", email: "roger@volst.nl", password: "test"}) {
-      token
-    }
-  }`);
+      signup(data: {name: "Roger", email: "roger@volst.nl", password: "test"}) {
+        token
+      }
+    }`);
+  } catch (e) {
+    expect(String(e)).toMatch(/Password is too short/);
+  }
+});
+
+test('signup - with custom password validation', async () => {
+  expect.assertions(1);
+  const req = client(
+    await startServer({
+      graphqlAuthentication: {
+        validatePassword: value => {
+          return value.length > 400;
+        }
+      }
+    })
+  );
+
+  try {
+    await req.request(`mutation {
+      signup(data: {name: "Roger", email: "roger@volst.nl", password: "testtest2"}) {
+        token
+      }
+    }`);
   } catch (e) {
     expect(String(e)).toMatch(/Password is too short/);
   }

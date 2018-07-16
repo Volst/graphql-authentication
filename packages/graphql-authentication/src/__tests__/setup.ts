@@ -87,7 +87,7 @@ const AUTH_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyIiwiaWF0IjoxNTI5MjUxNjQ4fQ.Tw4a0CI3r_8GmyuO1v2aMonrQtKV9QFYnXoxQz0cyRQ';
 
 let http: any;
-export async function startServer() {
+export async function startServer(options: any = {}) {
   if (http) {
     await http.close();
   }
@@ -106,7 +106,8 @@ export async function startServer() {
       ...req,
       graphqlAuthentication: graphqlAuthenticationConfig({
         secret: 'wherearemyshoes',
-        adapter
+        adapter,
+        ...options.graphqlAuthentication
       })
     })
   });

@@ -9,7 +9,6 @@
     "noUnusedLocals": false,
     "strictFunctionTypes": false,
     "noImplicitAny": false,
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true
+    "forceConsistentCasingInFileNames": true
   }
 }

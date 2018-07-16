@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { getUser, Context } from './utils';
 import { User } from './Adapter';
 import {
@@ -96,7 +96,7 @@ export const mutations = {
 
     validatePassword(data.password);
     const hashedPassword = await getHashedPassword(data.password);
-    const emailConfirmToken = uuidv4();
+    const emailConfirmToken = uuid();
 
     const newUser = await ctx.graphqlAuthentication.adapter.createUserBySignup(
       ctx,
@@ -266,7 +266,7 @@ export const mutations = {
     // This token will be used in the email to the user.
     // According to https://gist.github.com/joepie91/7105003c3b26e65efcea63f3db82dfba
     // uuid v4 is safe to be used as random token generator.
-    const inviteToken = uuidv4();
+    const inviteToken = uuid();
 
     const newUser = await ctx.graphqlAuthentication.adapter.createUserByInvite(
       ctx,
@@ -327,7 +327,7 @@ export const mutations = {
     // This token will be used in the email to the user.
     // According to https://gist.github.com/joepie91/7105003c3b26e65efcea63f3db82dfba
     // uuid v4 is safe to be used as random token generator.
-    const resetToken = uuidv4();
+    const resetToken = uuid();
     const now = new Date();
     // Expires in two hours
     const resetExpires = new Date(now.getTime() + 7200000).toISOString();

@@ -10,10 +10,11 @@
     "graphql-cli": "^2.16.4",
     "graphql-yoga": "^1.14.12",
     "prisma": "^1.11.1",
-    "prisma-binding": "^2.1.0"
+    "prisma-binding": "^2.1.0",
+    "ts-node": "^7.0.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "ts-node server.ts",
     "prisma": "PRISMA_MANAGEMENT_API_SECRET=mymanagementsecret123 prisma"
   }
 }

@@ -108,7 +108,7 @@ graphqlAuthentication: graphqlAuthenticationConfig({
 });
 ```
 
-However, this package does not provide the email templates itself for you, since these differ too much. You can [**copy the email templates**](./example/emails) from our example to get started.
+However, this package does not provide the email templates itself for you, since these differ too much. You can [**copy the email templates**](https://github.com/Volst/graphql-authentication/tree/master/examples/with-prisma/emails) from our example to get started.
 
 # Documentation
 

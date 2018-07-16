@@ -25,7 +25,6 @@
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "lint": "tslint -p .",
     "prepublishOnly": "npm run -s build",
-    "start": "nodemon -e ts,graphql -x ts-node example/index.ts",
     "test": "jest --watch",
     "test-coverage": "jest --coverage",
     "ci": "npm run -s lint && npm run -s build && npm run -s test-coverage && codecov",

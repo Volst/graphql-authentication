@@ -2,7 +2,7 @@ import { getRepository } from 'typeorm';
 import { User } from './database';
 import { GraphqlAuthenticationAdapter } from './node_modules/graphql-authentication';
 
-// There currently is no package for a sequelize adapter, so we create one ourselves!
+// There currently is no package for a TypeORM adapter, so we create one ourselves!
 
 export class GraphqlAuthenticationTypeOrmAdapter
   implements GraphqlAuthenticationAdapter {

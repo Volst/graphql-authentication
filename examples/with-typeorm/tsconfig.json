@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["esnext"],
+    "strict": true,
+    "strictFunctionTypes": false,
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true
+  }
+}

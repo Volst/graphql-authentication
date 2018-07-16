@@ -1,0 +1,21 @@
+{
+  "name": "graphql-authentication-with-typeorm-example",
+  "private": true,
+  "version": "1.0.0",
+  "license": "ISC",
+  "dependencies": {
+    "email-templates": "^4.0.1",
+    "graphql-authentication": "^0.5.4",
+    "graphql-yoga": "^1.14.12",
+    "reflect-metadata": "^0.1.12",
+    "sqlite3": "^4.0.2",
+    "typeorm": "^0.2.7"
+  },
+  "scripts": {
+    "start": "ts-node server.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  }
+}

@@ -7,6 +7,8 @@ A very opinionated user authentication package for [GraphQL](https://graphql.org
 This package provides **a GraphQL schema and GraphQL resolvers** for everything you need related to authentication. It does not access your data layer (e.g. an ORM); for that you need to write an _adapter_ (which is not hard to do).
 If you use Prisma, there is already an adapter for you, **[graphql-authentication-prisma](https://github.com/Volst/graphql-authentication/tree/master/packages/graphql-authentication-prisma)**. You can also checkout the [`examples/`](https://github.com/Volst/graphql-authentication/tree/master/examples) folder with examples on how to write an adapter for Sequelize and TypeORM!
 
+[**👉 Try out the live demo**](https://graphql-authentication-demo.now.sh/)
+
 **Features:**
 
 - Signup with good ol' email/password and confirmation email

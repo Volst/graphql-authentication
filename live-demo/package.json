@@ -1,0 +1,22 @@
+{
+  "name": "graphql-authentication-live-demo",
+  "private": true,
+  "version": "1.0.0",
+  "license": "ISC",
+  "dependencies": {
+    "email-templates": "^4.0.1",
+    "graphql": "^0.13.2",
+    "graphql-authentication": "^0.5.4",
+    "graphql-yoga": "^1.14.12",
+    "nodemailer-mailgun-transport": "^1.4.0",
+    "now": "^11.2.10"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "now": {
+    "alias": [
+      "graphql-authentication-demo.now.sh"
+    ]
+  }
+}

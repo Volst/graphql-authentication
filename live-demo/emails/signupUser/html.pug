@@ -1,0 +1,12 @@
+p Hi,
+p You have just created an account on GraphQL Authentication Demo! As a last step, please confirm your email by writing this mutation:
+pre
+  | mutation {
+  |   confirmEmail(email: "#{email}", emailConfirmToken: "#{emailConfirmToken}") {
+  |     token
+  |   }
+  | }
+
+p
+  em In a real-world application the user wouldn't have to run the mutation itself of course, it would something like this:<br />
+  a(href=mailAppUrl + '/confirm-email/' + email + '/' + emailConfirmToken) Confirm your email.

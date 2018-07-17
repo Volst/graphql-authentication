@@ -1,0 +1,12 @@
+p Hi,
+p You requested a password reset on GraphQL Authentication Demo. Reset your password by writing this mutation:
+pre
+  | mutation {
+  |   passwordReset(password: "mynewpassword", email: "#{email}", resetToken: "#{resetToken}") {
+  |     id
+  |   }
+  |}
+
+p
+  em In a real-world application the user wouldn't have to run the mutation itself of course, it would something like this:<br />
+  a(href=mailAppUrl + '/login/reset-password/' + email + '/' + resetToken) Reset my password.

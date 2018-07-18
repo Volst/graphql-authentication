@@ -132,7 +132,7 @@ Queries:
 
 - `currentUser`
 
-For more details take a look at [schema.graphql](./schema.graphql).
+For more details take a look at [schema.graphql](./packages/graphql-authentication/schema.graphql).
 
 ## Authentication on endpoints
 
@@ -207,7 +207,7 @@ And then save the token to `localStorage`. Now you need to send the token with e
 
 ## Adding custom fields to the User type
 
-If you wish to expose some fields on the User type that are not exposed in our [schema.graphql](./schema.graphql), you can provide your own User. In your own `schema.graphql`, do something like the following:
+If you wish to expose some fields on the User type that are not exposed in our [schema.graphql](./packages/graphql-authentication/schema.graphql), you can provide your own User. In your own `schema.graphql`, do something like the following:
 
 ```graphql
 # import Mutation.* from "node_modules/graphql-authentication/schema.graphql"

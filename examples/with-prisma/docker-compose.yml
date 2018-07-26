@@ -19,6 +19,6 @@ services:
             password: prisma
   db:
     image: mysql:5.7
-    restart: always
+    restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: prisma

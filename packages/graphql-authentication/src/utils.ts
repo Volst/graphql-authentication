@@ -4,11 +4,13 @@ import { ID } from './Adapter';
 
 export interface Context {
   graphqlAuthentication: IGraphqlAuthenticationConfig;
-  request: any;
+  request?: any;
+  req?: any;
 }
 
 function _getUserId(ctx: Context): string {
-  const Authorization = ctx.request.get('Authorization');
+  // For Apollo Server 2.0+ it is ctx.req and for GraphQL Yoga ctx.request. Maybe there is a better way...
+  const Authorization = (ctx.req || ctx.request).get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
     const { userId } = jwt.verify(token, ctx.graphqlAuthentication.secret) as {

@@ -10,6 +10,7 @@ import {
   InvalidEmailError,
   PasswordTooShortError,
   UserNotFoundError,
+  IncorrectPasswordError,
   InvalidInviteTokenError,
   UserEmailExistsError,
   UserInviteNotAcceptedError,
@@ -195,7 +196,7 @@ export const mutations = {
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      throw new UserNotFoundError();
+      throw new IncorrectPasswordError();
     }
 
     // Purposefully async, this update doesn't matter that much.

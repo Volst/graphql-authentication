@@ -23,7 +23,7 @@ const resolvers = {
 
 const mailer = new Email({
   message: {
-    from: 'info@volst.nl'
+    from: 'info@example.com'
   },
   views: {
     root: path.join(__dirname, 'emails')

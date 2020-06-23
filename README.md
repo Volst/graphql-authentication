@@ -1,5 +1,7 @@
 # GraphQL Authentication
 
+**Disclaimer: This repository is not actively maintained!**
+
 _Previously called Prisma Auth_
 
 A very opinionated user authentication package for [GraphQL](https://graphql.org/). It uses old-school email/password authentication.

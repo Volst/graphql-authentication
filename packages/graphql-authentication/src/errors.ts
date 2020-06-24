@@ -20,6 +20,10 @@ export const UserNotFoundError = createError('UserNotFoundError', {
   message: 'No user found.'
 });
 
+export const IncorrectPasswordError = createError('IncorrectPasswordError', {
+  message: 'Password is incorrect.'
+});
+
 export const InvalidInviteTokenError = createError('InvalidInviteTokenError', {
   message: 'inviteToken is invalid.'
 });

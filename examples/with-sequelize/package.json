@@ -7,7 +7,7 @@
     "email-templates": "^4.0.1",
     "graphql-authentication": "^0.5.3",
     "graphql-yoga": "^1.14.12",
-    "sequelize": "^4.38.0",
+    "sequelize": "^5.15.1",
     "sqlite3": "^4.0.2"
   },
   "scripts": {

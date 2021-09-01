@@ -3740,8 +3740,8 @@ object-path-immutable@^1.0.1:
   resolved "https://registry.yarnpkg.com/object-path-immutable/-/object-path-immutable-1.0.3.tgz#bae558dbd8c4107985d82d05dfc1dea1fb1c3208"
 
 object-path@^0.11.4:
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.4.tgz#370ae752fbf37de3ea70a861c23bba8915691949"
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.7.tgz#5f211161f34bb395e4b13a5f565b79d933b6f65d"
 
 object.getownpropertydescriptors@^2.0.3:
   version "2.0.3"

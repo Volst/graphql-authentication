@@ -57,7 +57,7 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.2.1",
     "uuid": "^3.2.1",
-    "validator": "^10.2.0"
+    "validator": "^13.7.0"
   },
   "peerDependencies": {
     "graphql-authentication": "^0.5.0",
